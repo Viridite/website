@@ -18,6 +18,12 @@ const LAUNCHER_REPO = "AndroidHorizonNX";
 // Generous but not unbounded — these are plain text logs, not video files.
 const MAX_LOG_BYTES = 4 * 1024 * 1024;      // 4MB per log
 const MAX_FIELD_BYTES = 4096;               // apk_url / source_site / username / notes
+// GitHub's Contents API write endpoint rejects anything much past ~25-30MB
+// (empirically confirmed: 25MB succeeded, 40MB got a hard 422 "too large").
+// 20MB leaves real headroom under that ceiling for base64 overhead (+33%)
+// and covers this project's actual target — small, old, simple 2D games —
+// comfortably. Anything bigger needs a direct download link instead.
+const MAX_APK_FILE_BYTES = 20 * 1024 * 1024;
 
 function corsHeaders() {
   return {
@@ -45,7 +51,7 @@ function toBase64(str) {
   return btoa(binary);
 }
 
-async function ghPut(token, path, contentStr, message) {
+async function ghPutRaw(token, path, base64Content, message) {
   const url = `https://api.github.com/repos/${OWNER}/${REPORTS_REPO}/contents/${path}`;
   const resp = await fetch(url, {
     method: "PUT",
@@ -57,7 +63,7 @@ async function ghPut(token, path, contentStr, message) {
     },
     body: JSON.stringify({
       message,
-      content: toBase64(contentStr),
+      content: base64Content,
       branch: "main",
     }),
   });
@@ -65,6 +71,11 @@ async function ghPut(token, path, contentStr, message) {
     const text = await resp.text();
     throw new Error(`GitHub write failed for ${path}: ${resp.status} ${text.slice(0, 300)}`);
   }
+}
+
+// Text content (logs, meta.json) — base64-encodes it here.
+async function ghPut(token, path, contentStr, message) {
+  return ghPutRaw(token, path, toBase64(contentStr), message);
 }
 
 async function ghDispatch(token, submissionId) {
@@ -89,21 +100,42 @@ async function ghDispatch(token, submissionId) {
 }
 
 function validate(body) {
-  const required = ["apk_url", "source_site", "launcher_log", "compat_log", "core_log"];
+  const required = ["source_site", "launcher_log", "compat_log", "core_log"];
   for (const key of required) {
     if (!body[key] || typeof body[key] !== "string" || !body[key].trim()) {
       return `Missing required field: ${key}`;
     }
   }
-  let apkUrl;
-  try {
-    apkUrl = new URL(body.apk_url);
-  } catch {
-    return "apk_url isn't a valid URL";
+
+  const hasUrl = !!(body.apk_url && body.apk_url.trim());
+  const hasFile = !!(body.apk_file_base64 && body.apk_file_base64.trim());
+  if (!hasUrl && !hasFile) {
+    return "Provide either an APK download link or an attached APK file";
   }
-  if (apkUrl.protocol !== "http:" && apkUrl.protocol !== "https:") {
-    return "apk_url must be http(s)";
+  if (hasUrl) {
+    let apkUrl;
+    try {
+      apkUrl = new URL(body.apk_url);
+    } catch {
+      return "apk_url isn't a valid URL";
+    }
+    if (apkUrl.protocol !== "http:" && apkUrl.protocol !== "https:") {
+      return "apk_url must be http(s)";
+    }
   }
+  if (hasFile) {
+    if (!body.apk_filename || typeof body.apk_filename !== "string") {
+      return "Missing apk_filename for the attached file";
+    }
+    // Rough decoded-size estimate from the base64 string length (base64 is
+    // ~4/3 the size of the original bytes) — good enough for a size gate,
+    // no need to actually decode it just to measure it.
+    const approxBytes = (body.apk_file_base64.length * 3) / 4;
+    if (approxBytes > MAX_APK_FILE_BYTES) {
+      return `Attached APK is too large (max ${MAX_APK_FILE_BYTES / (1024 * 1024)}MB — use a download link instead)`;
+    }
+  }
+
   for (const key of ["source_site", "github_username", "notes"]) {
     if (body[key] && byteLen(body[key]) > MAX_FIELD_BYTES) {
       return `${key} is too long`;
@@ -144,8 +176,11 @@ export default {
 
     const id = crypto.randomUUID();
     const submittedAt = new Date().toISOString();
+    const hasFile = !!(body.apk_file_base64 && body.apk_file_base64.trim());
     const meta = {
-      apk_url: body.apk_url.trim(),
+      apk_url: hasFile ? "" : body.apk_url.trim(),
+      apk_uploaded: hasFile,
+      apk_filename: hasFile ? body.apk_filename : "",
       source_site: body.source_site.trim(),
       github_username: (body.github_username || "").trim(),
       notes: (body.notes || "").trim(),
@@ -161,6 +196,12 @@ export default {
         `Queue compat submission ${id} (compat log)`);
       await ghPut(env.GH_TOKEN, `pending/${id}/core_log.txt`, body.core_log,
         `Queue compat submission ${id} (core log)`);
+      if (hasFile) {
+        // Already base64 from the browser — pass straight through, no
+        // re-encoding (that would double-encode and corrupt it).
+        await ghPutRaw(env.GH_TOKEN, `pending/${id}/game.apk`, body.apk_file_base64.trim(),
+          `Queue compat submission ${id} (uploaded APK)`);
+      }
       await ghDispatch(env.GH_TOKEN, id);
     } catch (e) {
       return json(502, { ok: false, error: String(e.message || e) });

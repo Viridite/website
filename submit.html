@@ -90,9 +90,11 @@
 
     <form id="report-form">
       <div class="field">
-        <label for="apk_url">APK download link</label>
-        <p class="hint">A direct link to the .apk you tested. Split/.xapk packages aren't supported yet.</p>
-        <input type="url" id="apk_url" name="apk_url" placeholder="https://example.com/path/to/game.apk" required>
+        <label for="apk_file">The APK</label>
+        <p class="hint">Attach the .apk file directly (up to 20MB), or paste a direct download link below instead. Split/.xapk packages aren't supported yet.</p>
+        <input type="file" id="apk_file" accept=".apk">
+        <p class="filename" id="apk_file_filename"></p>
+        <input type="url" id="apk_url" name="apk_url" placeholder="https://example.com/path/to/game.apk">
       </div>
 
       <div class="field">
@@ -192,6 +194,41 @@
 })();
 
 (function () {
+  var MAX_APK_FILE_BYTES = 20 * 1024 * 1024;
+  var apkFile = { base64: null, filename: null };
+
+  var apkFileInput = document.getElementById("apk_file");
+  var apkFilenameEl = document.getElementById("apk_file_filename");
+  var apkUrlInput = document.getElementById("apk_url");
+
+  apkFileInput.addEventListener("change", function () {
+    var file = apkFileInput.files[0];
+    apkFile.base64 = null;
+    apkFile.filename = null;
+    if (!file) { apkFilenameEl.style.display = "none"; return; }
+    if (file.size > MAX_APK_FILE_BYTES) {
+      apkFilenameEl.textContent = file.name + " is over 20MB — use a download link instead.";
+      apkFilenameEl.style.display = "block";
+      apkFileInput.value = "";
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function () {
+      // reader.result is "data:<mime>;base64,<data>" — keep just the data.
+      var commaIdx = reader.result.indexOf(",");
+      apkFile.base64 = reader.result.slice(commaIdx + 1);
+      apkFile.filename = file.name;
+      apkFilenameEl.textContent = "Attached " + file.name + " (" + file.size.toLocaleString() + " bytes) — the link field below is ignored while a file is attached.";
+      apkFilenameEl.style.display = "block";
+      apkUrlInput.disabled = true;
+    };
+    reader.onerror = function () {
+      apkFilenameEl.textContent = "Couldn't read " + file.name + " — use a download link instead.";
+      apkFilenameEl.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  });
+
   var RELAY_URL = "https://android-horizon-compat-relay.zeraoralegendary.workers.dev";
 
   var form = document.getElementById("report-form");
@@ -199,8 +236,14 @@
 
   form.addEventListener("submit", function (ev) {
     ev.preventDefault();
+
+    if (!apkFile.base64 && !apkUrlInput.value.trim()) {
+      status.className = "err";
+      status.textContent = "Attach the APK file or paste a download link.";
+      return;
+    }
+
     var payload = {
-      apk_url: document.getElementById("apk_url").value.trim(),
       source_site: document.getElementById("source_site").value.trim(),
       github_username: document.getElementById("github_username").value.trim(),
       launcher_log: document.getElementById("launcher_log").value,
@@ -208,6 +251,12 @@
       core_log: document.getElementById("core_log").value,
       notes: document.getElementById("notes").value,
     };
+    if (apkFile.base64) {
+      payload.apk_file_base64 = apkFile.base64;
+      payload.apk_filename = apkFile.filename;
+    } else {
+      payload.apk_url = apkUrlInput.value.trim();
+    }
 
     var submitBtn = form.querySelector("button[type=submit]");
     submitBtn.disabled = true;
@@ -225,6 +274,10 @@
           status.className = "ok";
           status.textContent = "Submitted! It'll be analyzed automatically — check the compatibility page in a few minutes.";
           form.reset();
+          apkFile.base64 = null;
+          apkFile.filename = null;
+          apkUrlInput.disabled = false;
+          apkFilenameEl.style.display = "none";
         } else {
           status.className = "err";
           status.textContent = "Couldn't submit: " + (result.body.error || "unknown error");
