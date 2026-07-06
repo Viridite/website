@@ -107,7 +107,7 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
 
     <section id="submitting-reports">
       <h2>Submitting a compatibility report</h2>
-      <p>Tried a game and want it on the <a href="../compatibility.html">compatibility page</a>? Use the <a href="../submit.html">submission form</a> — no GitHub account needed. Attach the <code>.apk</code> you tested directly (up to 20MB) or paste a download link, say where you got it from, and attach or paste the three log files from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>. There's no length limit on the log fields either way.</p>
+      <p>Tried a game and want it on the <a href="../compatibility.html">compatibility page</a>? Use the <a href="../submit.html">submission form</a> — no GitHub account needed. Attach the <code>.apk</code> you tested directly (uploads straight to storage — real APKs running 50-150MB are no problem) or paste a download link, say where you got it from, and attach or paste the three log files from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>. There's no length limit on the log fields either way.</p>
       <p>It's handled entirely by automation, and there's no maintainer in the loop:</p>
       <ol class="plain">
         <li>The form posts to a small relay (a Cloudflare Worker) that queues the submission in <a href="https://github.com/AndroidHorizon/compat-reports">compat-reports</a> and kicks off a GitHub Action — no GitHub login involved anywhere in this step.</li>

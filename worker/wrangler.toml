@@ -3,12 +3,31 @@ main = "index.js"
 compatibility_date = "2026-01-01"
 
 # Secrets (set with `wrangler secret put <NAME>`, never committed):
-#   GH_TOKEN       — classic PAT with `repo` scope on the AndroidHorizon org.
-#                    Needs write access to compat-reports (to write pending/
-#                    submissions) and to AndroidHorizonNX (to fire the
-#                    repository_dispatch event that kicks off analysis).
+#   GH_TOKEN               — classic PAT with `repo` scope on the
+#                            AndroidHorizon org. Needs write access to
+#                            compat-reports (to write pending/ submissions)
+#                            and to AndroidHorizonNX (to fire the
+#                            repository_dispatch event that kicks off
+#                            analysis).
+#   R2_ACCESS_KEY_ID       — R2 S3-API access key (from the R2 "Manage API
+#   R2_SECRET_ACCESS_KEY     Tokens" page, NOT the main Cloudflare API
+#                            token). Object Read & Write on the
+#                            android-horizon-compat-uploads bucket. Used to
+#                            hand-sign presigned PUT/GET URLs (SigV4) so the
+#                            browser can upload an APK directly to R2 and
+#                            the Action can download it directly — the file
+#                            never passes through this Worker at all, which
+#                            is what lets real ~100-150MB APKs work despite
+#                            both GitHub's Contents API (~30-40MB ceiling)
+#                            and Cloudflare Workers' own ~100MB request-body
+#                            limit for anything that *does* hit a Worker.
+#   CF_ACCOUNT_ID          — the Cloudflare account ID (part of the R2 S3
+#                            endpoint hostname: <id>.r2.cloudflarestorage.com).
 #
-# No KV/D1/R2 bindings — this Worker holds no state of its own. Every
-# submission is written straight to compat-reports' pending/ folder via the
-# GitHub Contents API, which is also where the rate/size limits actually
-# live (see index.js).
+# No bindings needed — R2 access here is over its S3-compatible HTTPS API
+# (hand-rolled SigV4 in index.js), not a Workers R2 bucket binding, since the
+# Worker never actually touches the file bytes; it only issues signed URLs.
+#
+# R2 bucket used: android-horizon-compat-uploads, with a 2-day object
+# lifecycle expiry rule (set once via the R2 API) as a cleanup safety net —
+# uploads get deleted automatically even if a submission never completes.
