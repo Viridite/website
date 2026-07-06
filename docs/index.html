@@ -104,6 +104,20 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
       <p>Pass the game's package name (e.g. <code>com.fingersoft.hillclimb</code>) as the first argument when launching <code>AndroidHorizonNX.nro</code>. This uses libnx's standard <code>envSetNextLoad(path, argv)</code> chain-load mechanism — the same one homebrew forwarders (RetroArch included) use. If the requested package isn't installed, Android Horizon falls back to the normal app-list picker with an on-screen notice.</p>
     </section>
 
+    <section id="submitting-reports">
+      <h2>Submitting a compatibility report</h2>
+      <p>Tried a game and want it on the <a href="../compatibility.html">compatibility page</a>? Open a <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/issues/new?template=game-compatibility-report.yml">Game compatibility report</a> issue with a direct link to the <code>.apk</code> (must end in <code>.apk</code>) and all three log files from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>.</p>
+      <p>It's handled entirely by automation — no need to wait on a maintainer:</p>
+      <ol class="plain">
+        <li>The APK link is validated, downloaded, and sanity-checked as a real ZIP.</li>
+        <li>The game's icon is extracted straight from the APK.</li>
+        <li>The Play Store listing is checked to confirm it's actually a game.</li>
+        <li>The three logs are scanned for frame stalls, crash/error signatures, and whether the game ever rendered a frame at all, producing a verdict: Playable, Runs with issues, Fails to launch, or Inconclusive.</li>
+        <li>The result is published to <a href="https://github.com/AndroidHorizon/compat-reports">compat-reports</a> and shown on the compatibility page — a repeat submission for the same version replaces the previous one.</li>
+        <li>The issue gets one summary comment and is closed — it's a data submission, not a discussion thread.</li>
+      </ol>
+    </section>
+
     <section id="more">
       <h2>More</h2>
       <p>The full technical history — every root-caused bug, every hardware measurement, the complete changelog — lives in the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX#readme">AndroidHorizonNX README</a>.</p>
