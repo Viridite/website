@@ -1,5 +1,11 @@
 <title>Game Compatibility — Android Horizon</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Honest, up-to-date game compatibility status for Android Horizon.">
+<meta property="og:title" content="Android Horizon — Game Compatibility">
+<meta property="og:description" content="Honest, up-to-date game compatibility status for Android Horizon.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/img/logo.jpg">
 <link rel="stylesheet" href="assets/style.css">
 
 <header class="site">
@@ -11,6 +17,7 @@
       <a href="compatibility.html" class="active">Compatibility</a>
       <a href="docs/index.html">Docs</a>
       <a href="https://github.com/AndroidHorizon">GitHub</a>
+      <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
     </nav>
   </div>
 </header>
@@ -18,31 +25,36 @@
 <main>
   <div class="wrap">
 
-    <h1>Game Compatibility List</h1>
+    <div class="hero" style="padding-top:40px">
+      <h1 style="font-size:clamp(1.8rem,3.6vw,2.6rem)">Game Compatibility</h1>
+      <p class="tagline">What actually runs, what doesn't, and why — no marketing spin.</p>
+    </div>
 
     <div class="callout warn">
       <strong>Honest status check first:</strong> only one game has ever actually been run against this project — <strong>Hill Climb Racing 1.67.0</strong>. There isn't a roster of other "integrated" games yet. The table below reflects what the compat layer's actual API surface supports or is missing, so it's clear what a new game would need before it could be tried — not a list of titles confirmed to work.
     </div>
 
     <section>
-      <table>
-        <thead>
-          <tr><th>Game</th><th>Status</th><th>Notes</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Hill Climb Racing</strong><br>1.67.0 (Fingersoft)</td>
-            <td class="status-ok">✅ Playable</td>
-            <td>The only game tested. Fully playable — touch controls, real audio, real threads, persistent saves, ~locked 60fps. One known deterministic crash on the Shop/IAP screen (root-caused, not yet patched — see the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX#changelog">changelog</a>).</td>
-          </tr>
-          <tr>
-            <td><strong>Angry Birds Classic</strong><br>("WebPit" community build 7.3.0)</td>
-            <td class="status-no">❌ Unsupported</td>
-            <td>32-bit only (<code>armeabi-v7a</code> + <code>x86</code>, no <code>arm64-v8a</code> at all — checked every entry in the APK directly). This specific build can't run here; a build that ships <code>arm64-v8a</code> would have a real chance.</td>
-          </tr>
-        </tbody>
-      </table>
-      <p style="color:var(--text-mute); margin-top:12px">The launcher automatically tags each scanned APK by architecture and blocks launching anything 32-bit-only with an explanation, rather than only finding out after a failed extraction.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Game</th><th>Status</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Hill Climb Racing</strong><br>1.67.0 (Fingersoft)</td>
+              <td><span class="pill ok">✅ Playable</span></td>
+              <td>The only game tested. Fully playable — touch controls, real audio, real threads, persistent saves, ~locked 60fps. One known deterministic crash on the Shop/IAP screen (root-caused, not yet patched — see the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX#changelog">changelog</a>).</td>
+            </tr>
+            <tr>
+              <td><strong>Angry Birds Classic</strong><br>("WebPit" community build 7.3.0)</td>
+              <td><span class="pill no">❌ Unsupported</span></td>
+              <td>32-bit only (<code>armeabi-v7a</code> + <code>x86</code>, no <code>arm64-v8a</code> at all — checked every entry in the APK directly). This specific build can't run here; a build that ships <code>arm64-v8a</code> would have a real chance.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:var(--text-mute); margin-top:14px">The launcher automatically tags each scanned APK by architecture and blocks launching anything 32-bit-only with an explanation, rather than only finding out after a failed extraction.</p>
     </section>
 
     <section>
@@ -65,8 +77,10 @@
 
     <section>
       <h2>Want another game supported?</h2>
-      <p>The process that got Hill Climb Racing working was: provide the <code>.apk</code> (and any <code>.obb</code>/expansion file), then real hardware iteration — extract it, see what JNI calls and native symbols it actually makes, implement/stub what's missing, rebuild, test on real hardware, repeat. That loop needs a real APK to extract and real hardware to test against; it's not something to fake from documentation alone.</p>
-      <p>Open an issue on the <a href="https://github.com/AndroidHorizon/AHNX-Translation-Core/issues">AHNX-Translation-Core</a> repo with the APK and that process can start for real.</p>
+      <div class="card">
+        <p style="margin-top:0">The process that got Hill Climb Racing working was: provide the <code>.apk</code> (and any <code>.obb</code>/expansion file), then real hardware iteration — extract it, see what JNI calls and native symbols it actually makes, implement/stub what's missing, rebuild, test on real hardware, repeat. That loop needs a real APK to extract and real hardware to test against; it's not something to fake from documentation alone.</p>
+        <p style="margin-bottom:0">Open an issue on the <a href="https://github.com/AndroidHorizon/AHNX-Translation-Core/issues">AHNX-Translation-Core</a> repo with the APK and that process can start for real.</p>
+      </div>
     </section>
 
   </div>
@@ -74,8 +88,8 @@
 
 <footer class="site">
   <div class="wrap">
-    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI ·
-    <a href="https://github.com/AndroidHorizon">GitHub org</a> ·
-    <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
+    <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
   </div>
 </footer>
