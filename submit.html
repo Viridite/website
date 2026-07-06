@@ -1,0 +1,198 @@
+<title>Submit a compatibility report — Android Horizon</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Submit a game compatibility report for Android Horizon.">
+<link rel="icon" href="assets/img/logo.jpg">
+<link rel="stylesheet" href="assets/style.css">
+
+<style>
+  .field { margin-bottom: 22px; }
+  .field label {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .field p.hint {
+    color: var(--text-mute);
+    font-size: 0.85rem;
+    margin: 0 0 8px;
+  }
+  .field input[type="text"], .field input[type="url"], .field textarea {
+    width: 100%;
+    background: var(--bg-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    font-family: inherit;
+  }
+  .field textarea {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+    min-height: 140px;
+    resize: vertical;
+  }
+  .field input:focus, .field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  #status {
+    margin-top: 20px;
+    padding: 14px 18px;
+    border-radius: var(--radius-md);
+    display: none;
+  }
+  #status.ok { display: block; background: color-mix(in srgb, var(--accent) 14%, transparent); border: 1px solid var(--accent); }
+  #status.err { display: block; background: var(--warn-bg); border: 1px solid var(--warn); }
+  #status.pending { display: block; background: var(--surface-2); border: 1px solid var(--border); }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: default; }
+</style>
+
+<header class="site">
+  <div class="wrap">
+    <img class="logo" src="assets/img/logo.jpg" alt="">
+    <span class="brand">Android <span>Horizon</span></span>
+    <nav class="site">
+      <a href="index.html">Home</a>
+      <a href="compatibility.html">Compatibility</a>
+      <a href="credits.html">Credits</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="https://github.com/AndroidHorizon">GitHub</a>
+      <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap" style="max-width:720px">
+
+    <div class="hero" style="padding-top:40px">
+      <h1 style="font-size:clamp(1.8rem,3.6vw,2.6rem)">Submit a compatibility report</h1>
+      <p class="tagline">No GitHub account needed. This gets analyzed automatically and shows up on the <a href="compatibility.html">compatibility page</a> within a few minutes.</p>
+    </div>
+
+    <div class="callout warn">
+      You need all three log files from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>. The game's name, package, and version are read straight out of the APK itself once it's downloaded — you don't need to type any of that.
+    </div>
+
+    <form id="report-form">
+      <div class="field">
+        <label for="apk_url">APK download link</label>
+        <p class="hint">A direct link to the .apk you tested. Split/.xapk packages aren't supported yet.</p>
+        <input type="url" id="apk_url" name="apk_url" placeholder="https://example.com/path/to/game.apk" required>
+      </div>
+
+      <div class="field">
+        <label for="source_site">Where did this APK come from?</label>
+        <p class="hint">e.g. "APKMirror", "APKPure", "official developer site"</p>
+        <input type="text" id="source_site" name="source_site" placeholder="APKMirror" required>
+      </div>
+
+      <div class="field">
+        <label for="github_username">Your GitHub username (optional)</label>
+        <p class="hint">Only used to credit you on the <a href="credits.html">Credits page</a> and in-app About screen, under Testers. Leave blank to stay anonymous — not verified, just for display.</p>
+        <input type="text" id="github_username" name="github_username" placeholder="octocat">
+      </div>
+
+      <div class="field">
+        <label for="launcher_log">launcher_log.txt</label>
+        <p class="hint">Paste the full contents — no length limit here.</p>
+        <textarea id="launcher_log" name="launcher_log" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="compat_log">compat_log.txt</label>
+        <p class="hint">Paste the full contents — no length limit here.</p>
+        <textarea id="compat_log" name="compat_log" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="core_log">log.txt (Translation Core)</label>
+        <p class="hint">Paste the full contents — no length limit here.</p>
+        <textarea id="core_log" name="core_log" required></textarea>
+      </div>
+
+      <div class="field">
+        <label for="notes">Anything else worth knowing? (optional)</label>
+        <textarea id="notes" name="notes" style="min-height:80px"></textarea>
+      </div>
+
+      <button type="submit" class="btn primary">Submit report</button>
+      <div id="status"></div>
+    </form>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
+    <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
+    <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var ONLINE_THRESHOLD = 25;
+  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
+        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
+      }
+    })
+    .catch(function () {});
+})();
+
+(function () {
+  // Point this at your deployed Worker's URL once it's live.
+  var RELAY_URL = "https://android-horizon-compat-relay.YOUR-SUBDOMAIN.workers.dev";
+
+  var form = document.getElementById("report-form");
+  var status = document.getElementById("status");
+
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var payload = {
+      apk_url: document.getElementById("apk_url").value.trim(),
+      source_site: document.getElementById("source_site").value.trim(),
+      github_username: document.getElementById("github_username").value.trim(),
+      launcher_log: document.getElementById("launcher_log").value,
+      compat_log: document.getElementById("compat_log").value,
+      core_log: document.getElementById("core_log").value,
+      notes: document.getElementById("notes").value,
+    };
+
+    var submitBtn = form.querySelector("button[type=submit]");
+    submitBtn.disabled = true;
+    status.className = "pending";
+    status.textContent = "Submitting…";
+
+    fetch(RELAY_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, body: j }; }); })
+      .then(function (result) {
+        if (result.ok && result.body.ok) {
+          status.className = "ok";
+          status.textContent = "Submitted! It'll be analyzed automatically — check the compatibility page in a few minutes.";
+          form.reset();
+        } else {
+          status.className = "err";
+          status.textContent = "Couldn't submit: " + (result.body.error || "unknown error");
+          submitBtn.disabled = false;
+        }
+      })
+      .catch(function (e) {
+        status.className = "err";
+        status.textContent = "Couldn't reach the submission service — try again shortly.";
+        submitBtn.disabled = false;
+      });
+  });
+})();
+</script>

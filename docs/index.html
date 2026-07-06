@@ -107,16 +107,17 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
 
     <section id="submitting-reports">
       <h2>Submitting a compatibility report</h2>
-      <p>Tried a game and want it on the <a href="../compatibility.html">compatibility page</a>? Open a <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/issues/new?template=game-compatibility-report.yml">Game compatibility report</a> issue with a direct link to the <code>.apk</code> you tested — or, since GitHub won't take a raw <code>.apk</code> upload, rename it to end in <code>.zip</code> and drag that in instead (it's a real ZIP under the hood either way). Attach all three log files too, from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>.</p>
-      <p>It's handled entirely by automation — no need to wait on a maintainer:</p>
+      <p>Tried a game and want it on the <a href="../compatibility.html">compatibility page</a>? Use the <a href="../submit.html">submission form</a> — no GitHub account needed. Give it a direct link to the <code>.apk</code> you tested, where you got it from, and the three log files from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>. There's no length limit on the log fields — paste the whole thing.</p>
+      <p>It's handled entirely by automation, and there's no maintainer in the loop:</p>
       <ol class="plain">
+        <li>The form posts to a small relay (a Cloudflare Worker) that queues the submission in <a href="https://github.com/AndroidHorizon/compat-reports">compat-reports</a> and kicks off a GitHub Action — no GitHub login involved anywhere in this step.</li>
         <li>The APK is fetched, validated, and sanity-checked as a real ZIP.</li>
-        <li>The game's icon is extracted straight from the APK.</li>
+        <li>Its package name, version, display name, and icon are read straight out of the manifest — not typed in, so they can't drift from what was actually tested.</li>
         <li>The Play Store listing is checked to confirm it's actually a game.</li>
         <li>The three logs are scanned for frame stalls, crash/error signatures, and whether the game ever rendered a frame at all, producing a verdict: Playable, Runs with issues, Fails to launch, or Inconclusive.</li>
-        <li>The result is published to <a href="https://github.com/AndroidHorizon/compat-reports">compat-reports</a> and shown on the compatibility page — a repeat submission for the same version replaces the previous one.</li>
-        <li>The issue gets one summary comment and is closed — it's a data submission, not a discussion thread.</li>
+        <li>The result — logs, a generated report, the APK's SHA-256, and an icon — is published to compat-reports and shows up on the compatibility page within a few minutes. A repeat submission for the same package+version replaces the previous one.</li>
       </ol>
+      <p>If you gave a GitHub username, it shows up on the <a href="../credits.html">Credits page</a> and in the launcher's own About screen under Testers — that field isn't verified, it's just for display.</p>
     </section>
 
     <section id="more">
