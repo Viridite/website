@@ -15,6 +15,7 @@
     <nav class="site">
       <a href="../index.html">Home</a>
       <a href="../compatibility.html">Compatibility</a>
+      <a href="../credits.html">Credits</a>
       <a href="index.html" class="active">Docs</a>
       <a href="https://github.com/AndroidHorizon">GitHub</a>
       <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
@@ -106,10 +107,10 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
 
     <section id="submitting-reports">
       <h2>Submitting a compatibility report</h2>
-      <p>Tried a game and want it on the <a href="../compatibility.html">compatibility page</a>? Open a <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/issues/new?template=game-compatibility-report.yml">Game compatibility report</a> issue with a direct link to the <code>.apk</code> (must end in <code>.apk</code>) and all three log files from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>.</p>
+      <p>Tried a game and want it on the <a href="../compatibility.html">compatibility page</a>? Open a <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/issues/new?template=game-compatibility-report.yml">Game compatibility report</a> issue, drag the <code>.apk</code> you tested straight into the upload box (or paste a link if it's already hosted somewhere), and attach all three log files from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>.</p>
       <p>It's handled entirely by automation — no need to wait on a maintainer:</p>
       <ol class="plain">
-        <li>The APK link is validated, downloaded, and sanity-checked as a real ZIP.</li>
+        <li>The uploaded APK is fetched, validated, and sanity-checked as a real ZIP.</li>
         <li>The game's icon is extracted straight from the APK.</li>
         <li>The Play Store listing is checked to confirm it's actually a game.</li>
         <li>The three logs are scanned for frame stalls, crash/error signatures, and whether the game ever rendered a frame at all, producing a verdict: Playable, Runs with issues, Fails to launch, or Inconclusive.</li>
@@ -129,7 +130,22 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
 <footer class="site">
   <div class="wrap">
     Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
+    <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
     <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
     <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
   </div>
 </footer>
+
+<script>
+(function () {
+  var ONLINE_THRESHOLD = 25;
+  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
+        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
+      }
+    })
+    .catch(function () {});
+})();
+</script>

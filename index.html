@@ -17,6 +17,7 @@
     <nav class="site">
       <a href="index.html" class="active">Home</a>
       <a href="compatibility.html">Compatibility</a>
+      <a href="credits.html">Credits</a>
       <a href="docs/index.html">Docs</a>
       <a href="https://github.com/AndroidHorizon">GitHub</a>
       <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
@@ -29,8 +30,8 @@
 
     <div class="hero">
       <img class="logo-lg" src="assets/img/logo.jpg" alt="Android Horizon logo">
-      <h1>Run Android games natively on <span>Nintendo Switch</span></h1>
-      <p class="tagline">Android Horizon is a compatibility/translation layer that runs Android NDK games directly on the Switch's real operating system — Horizon OS. No Android OS, no emulator, no VM.</p>
+      <h1>Android games, running on <span>Nintendo Switch</span> — for real</h1>
+      <p class="tagline">Not an emulator. No Android OS underneath. The game's actual ARM64 code runs directly on the Switch's own chip, with a compatibility shim standing in for everything Android normally provides.</p>
       <div class="btn-row">
         <a class="btn primary" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download latest release</a>
         <a class="btn secondary" href="docs/index.html">Read the docs</a>
@@ -38,39 +39,22 @@
     </div>
 
     <div class="callout warn">
-      <strong>Please read before trying this:</strong> this project is in extremely early stages. Approximately 99.8%+ of the code was written by Anthropic's Claude AI, working with a non-developer author who handles hardware testing and direction. Only <strong>one game</strong> has ever actually been run against this project. Use entirely at your own risk — see the <a href="compatibility.html">compatibility list</a> for the honest current status.
+      <strong>Read this first:</strong> this is a very early, experimental project — most of the code was written by Claude (Anthropic's AI) working alongside a non-developer who does the hardware testing and calls the shots on direction. Treat it accordingly. Check the <a href="compatibility.html">compatibility page</a> before assuming your game will run — it probably hasn't been tried yet.
     </div>
 
     <section>
-      <h2>What is this?</h2>
-      <p>Think of it like Wine on Linux, but for Android games on a game console — <strong>not emulation, but translation</strong>. The game's ARM64 machine code runs directly on the Switch's Tegra X1 processor, the same chip Android phones use. A thin shim layer fakes just enough of the Android runtime — libc, OpenGL ES, JNI, asset management — that the game's native <code>.so</code> library doesn't notice it isn't running on Android.</p>
-      <div class="grid-2">
-        <div class="card">
-          <h3>Current focus</h3>
-          <ul class="plain">
-            <li>Simple, old, 2D Android games</li>
-            <li>Ship an <code>arm64-v8a</code> native library</li>
-            <li>OpenGL ES 2.0/3.0 rendering</li>
-            <li>No Google Play Services dependency</li>
-            <li>Local saves only, no network requirement</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>What's working today</h3>
-          <ul class="plain">
-            <li>Full ELF loading, relocation &amp; linking, zero unresolved symbols</li>
-            <li>Real libnx threads, mutexes, condvars behind pthreads</li>
-            <li>Real touch input driving the game's own native handlers</li>
-            <li>Real audio (OGG/MP3/Opus/FLAC) via a custom SDL2_mixer backend</li>
-            <li>A locked 60&nbsp;fps in normal play, persistent saves</li>
-          </ul>
-        </div>
+      <h2>What this actually is</h2>
+      <p>It's Wine, basically, except the "Windows app" is an Android game and the "Linux" is a game console. There's no emulation happening and no hidden Android install — the game's native <code>.so</code> library gets loaded and run directly on the Switch's Tegra X1, the same ARM chip that's in a lot of Android phones. What Android Horizon actually provides is a shim underneath it: enough of libc, JNI, OpenGL ES, and asset/file handling that the game never notices it isn't talking to a real Android device.</p>
+      <p>Because of that, what runs and what doesn't comes down to what the shim happens to implement, not how "big" or "small" a game is in the abstract. Right now that means older, simple 2D games with an <code>arm64-v8a</code> build, OpenGL ES rendering, no Play Services dependency, and saves that stay on-device. Hill Climb Racing is the one game that's actually been pushed through this end-to-end — see below for exactly what that took.</p>
+      <div class="card">
+        <h3>What's confirmed working, on real hardware</h3>
+        <p style="margin-bottom:0">ELF loading and linking with zero unresolved symbols, real libnx threads standing in for pthreads, actual touch input reaching the game's own input handlers, real audio decoding (OGG/MP3/Opus/FLAC) through a custom SDL2_mixer backend, a locked 60fps during gameplay, and saves that persist across launches.</p>
       </div>
     </section>
 
     <section>
       <h2>Seen on real hardware</h2>
-      <p>Every screenshot below was captured automatically by Android Horizon itself, running on a real, modded Switch — none are mockups or emulator captures.</p>
+      <p>Every screenshot below came off the Switch itself — the launcher saves a copy of each UI screen, and the game loop grabs the actual framebuffer at a few milestone frames. Nothing here is a mockup.</p>
       <div class="shots">
         <figure>
           <div class="frame"><img src="assets/img/screenshots/ui_menu.png" alt="APK browser"></div>
@@ -100,19 +84,19 @@
     </section>
 
     <section>
-      <h2>Architecture</h2>
-      <p>Android Horizon is split into two pieces that chain-load into each other, rather than one monolithic binary:</p>
+      <h2>How it's put together</h2>
+      <p>Two repos, chain-loaded into each other instead of one big binary — mostly because a Switch process is stuck in one execution mode (64-bit or 32-bit) for its whole life, so the picker and the engine had to be separable from day one.</p>
       <div class="repo-links">
         <div class="card">
           <h3><a href="https://github.com/AndroidHorizon/AndroidHorizonNX">AndroidHorizonNX</a></h3>
-          <p>The launcher/picker. Scans for APKs, tags each by native ABI, and chain-loads the right engine on launch. No ELF loader or JNI shim of its own.</p>
+          <p>The picker. Scans your APKs, figures out which native ABI each one ships, and hands off to the right engine when you launch something. Doesn't know how to load an ELF or fake a JNI call — that's not its job.</p>
         </div>
         <div class="card">
           <h3><a href="https://github.com/AndroidHorizon/AHNX-Translation-Core">AHNX-Translation-Core</a></h3>
-          <p>The engine. ELF loading, JIT, the JNI/Bionic compat layer, audio, sensors — everything that actually runs a game.</p>
+          <p>The actual engine — ELF loading, JIT, the Bionic/JNI compat layer, audio, sensors. Everything above is really describing what this repo does.</p>
         </div>
       </div>
-      <p style="margin-top:18px">Full technical write-up, build instructions, and the changelog live in <a href="docs/index.html">the docs</a>.</p>
+      <p style="margin-top:18px">The full write-up — build steps, the changelog, every bug that got root-caused along the way — is in <a href="docs/index.html">the docs</a>.</p>
     </section>
 
   </div>
@@ -121,7 +105,24 @@
 <footer class="site">
   <div class="wrap">
     Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
+    <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
     <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
     <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
   </div>
 </footer>
+
+<script>
+(function () {
+  // Only worth showing once there's actually a crowd — a "2 online" badge
+  // reads as more embarrassing than inviting for a project this size.
+  var ONLINE_THRESHOLD = 25;
+  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
+        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
+      }
+    })
+    .catch(function () {});
+})();
+</script>

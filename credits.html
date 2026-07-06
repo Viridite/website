@@ -1,0 +1,243 @@
+<title>Credits — Android Horizon</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Everyone who's contributed code, testing, or reports to Android Horizon.">
+<meta property="og:title" content="Android Horizon — Credits">
+<meta property="og:description" content="Everyone who's contributed code, testing, or reports to Android Horizon.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/img/logo.jpg">
+<link rel="stylesheet" href="assets/style.css">
+
+<style>
+  #reel-wrap {
+    position: relative;
+    height: 60vh;
+    min-height: 420px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+  }
+  #reel-wrap::before, #reel-wrap::after {
+    content: "";
+    position: absolute;
+    left: 0; right: 0;
+    height: 56px;
+    pointer-events: none;
+    z-index: 2;
+  }
+  #reel-wrap::before { top: 0; background: linear-gradient(var(--surface), transparent); }
+  #reel-wrap::after  { bottom: 0; background: linear-gradient(transparent, var(--surface)); }
+  #reel {
+    position: absolute;
+    inset: 0;
+    overflow-y: auto;
+    padding: 32px 28px;
+    scrollbar-width: thin;
+  }
+  .credit-category { margin-bottom: 36px; }
+  .credit-category:last-child { margin-bottom: 12px; }
+  .credit-category h3 {
+    text-align: center;
+    color: var(--accent);
+    letter-spacing: 0.02em;
+    margin: 0 0 18px;
+  }
+  .credit-people {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+  }
+  .credit-person {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 92px;
+    text-align: center;
+  }
+  .credit-person img {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+  }
+  .credit-person span {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    word-break: break-word;
+  }
+  .credit-hint {
+    text-align: center;
+    color: var(--text-mute);
+    font-size: 0.85rem;
+    margin-top: 12px;
+  }
+</style>
+
+<header class="site">
+  <div class="wrap">
+    <img class="logo" src="assets/img/logo.jpg" alt="">
+    <span class="brand">Android <span>Horizon</span></span>
+    <nav class="site">
+      <a href="index.html">Home</a>
+      <a href="compatibility.html">Compatibility</a>
+      <a href="credits.html" class="active">Credits</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="https://github.com/AndroidHorizon">GitHub</a>
+      <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="hero" style="padding-top:40px">
+      <h1 style="font-size:clamp(1.8rem,3.6vw,2.6rem)">Credits</h1>
+      <p class="tagline">Code, testing, reports — same list the launcher's own About screen shows, pulled live from GitHub.</p>
+    </div>
+
+    <section>
+      <div id="reel-wrap">
+        <div id="reel">
+          <p style="text-align:center;color:var(--text-mute)">Loading credits…</p>
+        </div>
+      </div>
+      <p class="credit-hint">Scrolls on its own — hover or touch it to take over and scroll manually.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
+    <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
+    <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var ONLINE_THRESHOLD = 25;
+  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
+        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
+      }
+    })
+    .catch(function () {});
+})();
+
+(function () {
+  var CODE_REPOS = [
+    { repo: "AndroidHorizonNX", title: "Launcher (AndroidHorizonNX)" },
+    { repo: "AHNX-Translation-Core", title: "Translation Core" },
+    { repo: "website", title: "Website" },
+    { repo: "compat-reports", title: "Compat-reports infra" },
+  ];
+
+  function avatarUrl(login) {
+    return "https://github.com/" + encodeURIComponent(login) + ".png?size=64";
+  }
+
+  function personEl(login) {
+    var wrap = document.createElement("a");
+    wrap.className = "credit-person";
+    wrap.href = "https://github.com/" + login;
+    wrap.target = "_blank";
+    wrap.rel = "noopener";
+
+    var img = document.createElement("img");
+    img.src = avatarUrl(login);
+    img.alt = login;
+    img.loading = "lazy";
+
+    var span = document.createElement("span");
+    span.textContent = login;
+
+    wrap.appendChild(img);
+    wrap.appendChild(span);
+    return wrap;
+  }
+
+  function categoryEl(title, logins) {
+    var cat = document.createElement("div");
+    cat.className = "credit-category";
+    var h = document.createElement("h3");
+    h.textContent = title;
+    cat.appendChild(h);
+    var people = document.createElement("div");
+    people.className = "credit-people";
+    logins.forEach(function (login) { people.appendChild(personEl(login)); });
+    cat.appendChild(people);
+    return cat;
+  }
+
+  var codeContributors = CODE_REPOS.map(function (r) {
+    return fetch("https://api.github.com/repos/AndroidHorizon/" + r.repo + "/contributors?per_page=100")
+      .then(function (resp) { return resp.ok ? resp.json() : []; })
+      .then(function (list) {
+        return { title: r.title, logins: (list || []).map(function (c) { return c.login; }) };
+      })
+      .catch(function () { return { title: r.title, logins: [] }; });
+  });
+
+  var testers = fetch("https://raw.githubusercontent.com/AndroidHorizon/compat-reports/main/data/games.json")
+    .then(function (r) { return r.ok ? r.json() : []; })
+    .then(function (games) {
+      var seen = {}, logins = [];
+      (games || []).forEach(function (g) {
+        if (g.submitted_by && !seen[g.submitted_by]) {
+          seen[g.submitted_by] = true;
+          logins.push(g.submitted_by);
+        }
+      });
+      return { title: "Testers", logins: logins };
+    })
+    .catch(function () { return { title: "Testers", logins: [] }; });
+
+  Promise.all(codeContributors.concat([testers])).then(function (categories) {
+    var reel = document.getElementById("reel");
+    reel.innerHTML = "";
+    var any = false;
+    categories.forEach(function (cat) {
+      if (cat.logins.length === 0) return;
+      any = true;
+      reel.appendChild(categoryEl(cat.title, cat.logins));
+    });
+    if (!any) {
+      reel.innerHTML = '<p style="text-align:center;color:var(--text-mute)">Couldn\'t load credits right now — try again shortly.</p>';
+      return;
+    }
+
+    // Auto-scroll like rolling end credits; pause while the visitor is
+    // actively scrolling/touching it themselves, resume after they stop.
+    var paused = false, resumeTimer = null;
+    function pauseThenResume() {
+      paused = true;
+      clearTimeout(resumeTimer);
+      resumeTimer = setTimeout(function () { paused = false; }, 4000);
+    }
+    reel.addEventListener("wheel", pauseThenResume, { passive: true });
+    reel.addEventListener("touchstart", pauseThenResume, { passive: true });
+    reel.addEventListener("mouseenter", function () { paused = true; });
+    reel.addEventListener("mouseleave", function () { paused = false; });
+
+    setInterval(function () {
+      if (paused) return;
+      var atBottom = reel.scrollTop + reel.clientHeight >= reel.scrollHeight - 1;
+      if (atBottom) {
+        reel.scrollTop = 0;
+      } else {
+        reel.scrollTop += 1;
+      }
+    }, 40);
+  });
+})();
+</script>
