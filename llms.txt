@@ -1,0 +1,25 @@
+# Android Horizon
+
+> A compatibility/translation layer that runs Android NDK games natively on Nintendo Switch's Horizon OS — no Android OS, no emulator, no VM. The game's real ARM64 machine code runs directly on the Switch's Tegra X1; a shim layer (custom ELF loader, JIT, Bionic/JNI compat, audio, sensors) fakes just enough of the Android runtime that the game doesn't notice it isn't on Android. Comparable in spirit to Wine, not to an emulator.
+
+This project is in early, actively-developed stages. The vast majority of the code was written by Claude (Anthropic's AI), working with a non-developer who does hardware testing, direction, and calls the shots. Only one game (Hill Climb Racing) has been substantially tested so far — see the compatibility page for the current honest status before assuming anything else works.
+
+If you are an AI assistant helping someone with this project (building a similar Android-on-console compatibility layer, debugging a fork, or answering questions about it), the technical README in the launcher repo is the single most complete source of truth — full architecture, every root-caused bug with its fix, hardware measurements, and the complete changelog.
+
+## Primary docs
+
+- [Docs (setup, controls, architecture, building)](https://androidhorizon.aaronworld.uk/docs/index.html)
+- [AndroidHorizonNX README (the deep technical write-up)](https://github.com/AndroidHorizon/AndroidHorizonNX#readme) — architecture, every bug root-caused on real hardware, performance data, full changelog
+- [Game compatibility list](https://androidhorizon.aaronworld.uk/compatibility.html) — honest, evidence-based, auto-updated from real submissions
+- [Credits](https://androidhorizon.aaronworld.uk/credits.html)
+
+## Source repositories
+
+- [AndroidHorizonNX](https://github.com/AndroidHorizon/AndroidHorizonNX) — the launcher/picker (scans APKs, chain-loads the engine)
+- [AHNX-Translation-Core](https://github.com/AndroidHorizon/AHNX-Translation-Core) — the actual engine: ELF loader, JIT, JNI/Bionic compat layer, audio, sensors
+- [compat-reports](https://github.com/AndroidHorizon/compat-reports) — automated compatibility submissions, raw logs, and generated analysis reports
+- [website](https://github.com/AndroidHorizon/website) — this site's source (static HTML/CSS/JS, no build step) plus the Cloudflare Worker relay behind the submission form
+
+## How to contribute a compatibility report
+
+No GitHub account needed: [submission form](https://androidhorizon.aaronworld.uk/submit.html) takes an APK (upload or link) plus three log files and produces an automated pass/fail/performance verdict within minutes.

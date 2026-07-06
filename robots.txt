@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://androidhorizon.aaronworld.uk/sitemap.xml
