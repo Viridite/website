@@ -1,0 +1,14 @@
+name = "android-horizon-compat-relay"
+main = "index.js"
+compatibility_date = "2026-01-01"
+
+# Secrets (set with `wrangler secret put <NAME>`, never committed):
+#   GH_TOKEN       — classic PAT with `repo` scope on the AndroidHorizon org.
+#                    Needs write access to compat-reports (to write pending/
+#                    submissions) and to AndroidHorizonNX (to fire the
+#                    repository_dispatch event that kicks off analysis).
+#
+# No KV/D1/R2 bindings — this Worker holds no state of its own. Every
+# submission is written straight to compat-reports' pending/ folder via the
+# GitHub Contents API, which is also where the rate/size limits actually
+# live (see index.js).

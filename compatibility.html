@@ -30,19 +30,19 @@
       <h1 style="font-size:clamp(1.8rem,3.6vw,2.6rem)">Game Compatibility</h1>
       <p class="tagline">Every row below came from someone actually running the game on hardware — nothing here is guessed.</p>
       <div class="btn-row">
-        <a class="btn primary" href="https://github.com/AndroidHorizon/AndroidHorizonNX/issues/new?template=game-compatibility-report.yml">Submit a compatibility report</a>
+        <a class="btn primary" href="submit.html">Submit a compatibility report</a>
         <a class="btn secondary" href="https://github.com/AndroidHorizon/compat-reports">Browse raw logs</a>
       </div>
     </div>
 
     <div class="callout warn">
-      This project is young and most games haven't been tried yet. Don't see the game you're after? That usually just means nobody's tested it — grab the APK, run it through Android Horizon, and <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/issues/new?template=game-compatibility-report.yml">submit what you find</a>. Package name, version, and icon are read straight out of the APK itself, so results can't drift from what you actually ran.
+      This project is young and most games haven't been tried yet. Don't see the game you're after? That usually just means nobody's tested it — grab the APK, run it through Android Horizon, and <a href="submit.html">submit what you find</a>. Package name, version, and icon are read straight out of the APK itself, so results can't drift from what you actually ran.
     </div>
 
     <section id="community-reports">
       <div id="community-reports-loading" style="color:var(--text-mute)">Loading reports…</div>
       <div id="community-reports-empty" class="card" style="display:none">
-        <p style="margin:0">Nothing submitted yet — this list fills in as people test games and <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/issues/new?template=game-compatibility-report.yml">report back</a>. Be the first.</p>
+        <p style="margin:0">Nothing submitted yet — this list fills in as people test games and <a href="submit.html">report back</a>. Be the first.</p>
       </div>
       <div id="community-reports-table" class="table-wrap" style="display:none">
         <table>
@@ -134,8 +134,9 @@
 
         var detailsTd = document.createElement("td");
         var reportUrl = "https://github.com/AndroidHorizon/compat-reports/blob/main/" + g.report_path;
+        var submitter = g.submitted_by ? ("@" + g.submitted_by + " from " + g.source_site) : ("from " + g.source_site);
         detailsTd.innerHTML = g.summary + ' — <a href="' + reportUrl + '">full report + logs</a>' +
-          ' <span style="color:var(--text-mute)">(submitted by @' + g.submitted_by + " from " + g.source_site + ")</span>";
+          ' <span style="color:var(--text-mute)">(submitted ' + submitter + ")</span>";
 
         tr.appendChild(nameTd);
         tr.appendChild(statusTd);
