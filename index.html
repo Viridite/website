@@ -1,0 +1,118 @@
+<title>Android Horizon — Android games, natively on Switch</title>
+<meta name="description" content="A compatibility/translation layer that runs Android NDK games directly on Nintendo Switch's Horizon OS — no Android OS, no emulator.">
+<link rel="stylesheet" href="assets/style.css">
+
+<header class="site">
+  <div class="wrap">
+    <img class="logo" src="assets/img/logo.jpg" alt="">
+    <span class="brand">Android <span>Horizon</span></span>
+    <nav class="site">
+      <a href="index.html" class="active">Home</a>
+      <a href="compatibility.html">Compatibility</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="https://github.com/AndroidHorizon">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="hero">
+      <img class="logo-lg" src="assets/img/logo.jpg" alt="Android Horizon logo">
+      <h1>Run Android games natively on <span>Nintendo Switch</span></h1>
+      <p class="tagline">Android Horizon is a compatibility/translation layer that runs Android NDK games directly on the Switch's real operating system — Horizon OS. No Android OS, no emulator, no VM.</p>
+      <div class="btn-row">
+        <a class="btn primary" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download latest release</a>
+        <a class="btn secondary" href="docs/index.html">Read the docs</a>
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <strong>Please read before trying this:</strong> this project is in extremely early stages. Approximately 99.8%+ of the code was written by Anthropic's Claude AI, working with a non-developer author who handles hardware testing and direction. Only <strong>one game</strong> has ever actually been run against this project. Use entirely at your own risk — see the <a href="compatibility.html">compatibility list</a> for the honest current status.
+    </div>
+
+    <section>
+      <h2>What is this?</h2>
+      <p>Think of it like Wine on Linux, but for Android games on a game console — <strong>not emulation, but translation</strong>. The game's ARM64 machine code runs directly on the Switch's Tegra X1 processor, the same chip Android phones use. A thin shim layer fakes just enough of the Android runtime — libc, OpenGL ES, JNI, asset management — that the game's native <code>.so</code> library doesn't notice it isn't running on Android.</p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>Current focus</h3>
+          <ul class="plain">
+            <li>Simple, old, 2D Android games</li>
+            <li>Ship an <code>arm64-v8a</code> native library</li>
+            <li>OpenGL ES 2.0/3.0 rendering</li>
+            <li>No Google Play Services dependency</li>
+            <li>Local saves only, no network requirement</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>What's working today</h3>
+          <ul class="plain">
+            <li>Full ELF loading, relocation &amp; linking, zero unresolved symbols</li>
+            <li>Real libnx threads, mutexes, condvars behind pthreads</li>
+            <li>Real touch input driving the game's own native handlers</li>
+            <li>Real audio (OGG/MP3/Opus/FLAC) via a custom SDL2_mixer backend</li>
+            <li>A locked 60&nbsp;fps in normal play, persistent saves</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Seen on real hardware</h2>
+      <p>Every screenshot below was captured automatically by Android Horizon itself, running on a real, modded Switch — none are mockups or emulator captures.</p>
+      <div class="shots">
+        <figure>
+          <img src="assets/img/screenshots/ui_menu.png" alt="APK browser">
+          <figcaption>The launcher's APK browser</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/screenshots/ui_loading.png" alt="Loading screen">
+          <figcaption>Live loading screen with real-time compat log</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/screenshots/ui_result.png" alt="Result screen">
+          <figcaption>Launch result screen</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/screenshots/game_frame30.png" alt="Game splash frame">
+          <figcaption>Fingersoft splash — frame 30</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/screenshots/game_frame300.png" alt="Game frame 300">
+          <figcaption>In-game — frame 300</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/img/screenshots/game_frame900.png" alt="Game frame 900">
+          <figcaption>In-game — frame 900</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>Architecture</h2>
+      <p>Android Horizon is split into two pieces that chain-load into each other, rather than one monolithic binary:</p>
+      <div class="repo-links">
+        <div class="card">
+          <h3><a href="https://github.com/AndroidHorizon/AndroidHorizonNX">AndroidHorizonNX</a></h3>
+          <p>The launcher/picker. Scans for APKs, tags each by native ABI, and chain-loads the right engine on launch. No ELF loader or JNI shim of its own.</p>
+        </div>
+        <div class="card">
+          <h3><a href="https://github.com/AndroidHorizon/AHNX-Translation-Core">AHNX-Translation-Core</a></h3>
+          <p>The engine. ELF loading, JIT, the JNI/Bionic compat layer, audio, sensors — everything that actually runs a game.</p>
+        </div>
+      </div>
+      <p style="margin-top:18px">Full technical write-up, build instructions, and the changelog live in <a href="docs/index.html">the docs</a>.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI ·
+    <a href="https://github.com/AndroidHorizon">GitHub org</a> ·
+    <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+  </div>
+</footer>

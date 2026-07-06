@@ -1,0 +1,81 @@
+<title>Game Compatibility — Android Horizon</title>
+<meta name="description" content="Honest, up-to-date game compatibility status for Android Horizon.">
+<link rel="stylesheet" href="assets/style.css">
+
+<header class="site">
+  <div class="wrap">
+    <img class="logo" src="assets/img/logo.jpg" alt="">
+    <span class="brand">Android <span>Horizon</span></span>
+    <nav class="site">
+      <a href="index.html">Home</a>
+      <a href="compatibility.html" class="active">Compatibility</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="https://github.com/AndroidHorizon">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <h1>Game Compatibility List</h1>
+
+    <div class="callout warn">
+      <strong>Honest status check first:</strong> only one game has ever actually been run against this project — <strong>Hill Climb Racing 1.67.0</strong>. There isn't a roster of other "integrated" games yet. The table below reflects what the compat layer's actual API surface supports or is missing, so it's clear what a new game would need before it could be tried — not a list of titles confirmed to work.
+    </div>
+
+    <section>
+      <table>
+        <thead>
+          <tr><th>Game</th><th>Status</th><th>Notes</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hill Climb Racing</strong><br>1.67.0 (Fingersoft)</td>
+            <td class="status-ok">✅ Playable</td>
+            <td>The only game tested. Fully playable — touch controls, real audio, real threads, persistent saves, ~locked 60fps. One known deterministic crash on the Shop/IAP screen (root-caused, not yet patched — see the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX#changelog">changelog</a>).</td>
+          </tr>
+          <tr>
+            <td><strong>Angry Birds Classic</strong><br>("WebPit" community build 7.3.0)</td>
+            <td class="status-no">❌ Unsupported</td>
+            <td>32-bit only (<code>armeabi-v7a</code> + <code>x86</code>, no <code>arm64-v8a</code> at all — checked every entry in the APK directly). This specific build can't run here; a build that ships <code>arm64-v8a</code> would have a real chance.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p style="color:var(--text-mute); margin-top:12px">The launcher automatically tags each scanned APK by architecture and blocks launching anything 32-bit-only with an explanation, rather than only finding out after a failed extraction.</p>
+    </section>
+
+    <section>
+      <h2>What a game needs, to have a real chance</h2>
+      <ul class="plain">
+        <li><code>arm64-v8a</code> native libraries in the APK (<code>lib/arm64-v8a/*.so</code>) — this project only loads AArch64 ELF binaries. ARM32-only (<code>armeabi-v7a</code>) APKs are detected during scanning and blocked with an explanation rather than attempted.</li>
+        <li>A plain <code>.apk</code> — the extractor doesn't understand split/<code>.xapk</code> packages yet.</li>
+        <li>An engine that talks to "Android" through native JNI callbacks to a handful of Java-side helper classes (the cocos2d-x <code>SimpleAudioEngine</code>/<code>UserDefault</code>/activity-callback pattern Hill Climb Racing uses) — that's the actual, tested API surface this project emulates. A game built this way has a real chance even if it's never been tried.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>What almost certainly won't work without a lot more work</h2>
+      <ul class="plain">
+        <li><strong>Unity games</strong> (<code>libunity.so</code>/IL2CPP) — a completely different native runtime and JNI surface than what's implemented; nothing here targets it.</li>
+        <li><strong>Games leaning on Google Play Services</strong> (Play Games sign-in, real ads, real IAP, Firebase, etc.) — those are stubbed out/no-op'd, not implemented. A game that <em>requires</em> one of these to function past a login/paywall screen won't get past it.</li>
+        <li><strong>Anything needing real network multiplayer.</strong></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Want another game supported?</h2>
+      <p>The process that got Hill Climb Racing working was: provide the <code>.apk</code> (and any <code>.obb</code>/expansion file), then real hardware iteration — extract it, see what JNI calls and native symbols it actually makes, implement/stub what's missing, rebuild, test on real hardware, repeat. That loop needs a real APK to extract and real hardware to test against; it's not something to fake from documentation alone.</p>
+      <p>Open an issue on the <a href="https://github.com/AndroidHorizon/AHNX-Translation-Core/issues">AHNX-Translation-Core</a> repo with the APK and that process can start for real.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI ·
+    <a href="https://github.com/AndroidHorizon">GitHub org</a> ·
+    <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+  </div>
+</footer>

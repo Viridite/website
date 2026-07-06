@@ -1,0 +1,107 @@
+<title>Docs — Android Horizon</title>
+<meta name="description" content="Setup, controls, building, and architecture docs for Android Horizon.">
+<link rel="stylesheet" href="../assets/style.css">
+
+<header class="site">
+  <div class="wrap">
+    <img class="logo" src="../assets/img/logo.jpg" alt="">
+    <span class="brand">Android <span>Horizon</span></span>
+    <nav class="site">
+      <a href="../index.html">Home</a>
+      <a href="../compatibility.html">Compatibility</a>
+      <a href="index.html" class="active">Docs</a>
+      <a href="https://github.com/AndroidHorizon">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <h1>Docs</h1>
+
+    <section id="setup">
+      <h2>Setup</h2>
+      <ol class="plain">
+        <li>Grab the latest bundled release zip from the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Releases page</a> and drag its contents onto your SD card's <code>/switch/</code> folder.</li>
+        <li>Place <code>.apk</code> files in <code>sdmc:/AndroidHorizonNX/apks/</code>.</li>
+        <li>Launch <code>AndroidHorizonNX</code> from hbmenu (Atmosphere CFW required).</li>
+        <li>Navigate with D-pad, left stick, or touch; press <strong>A</strong> or tap a game to launch it.</li>
+        <li>If a launch fails, check <code>sdmc:/AndroidHorizonNX/compat_log.txt</code> for the full error log.</li>
+      </ol>
+    </section>
+
+    <section id="controls">
+      <h2>Controls</h2>
+      <div class="callout warn">
+        <strong>Handheld mode only.</strong> Android games use touch screen input. The Switch touchscreen only works in handheld mode — in docked mode there is no touch input, so games will be uncontrollable. Android Horizon detects docked mode and shows a warning in the footer.
+      </div>
+      <table>
+        <thead><tr><th>Input</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>D-pad / left stick / swipe</td><td>Navigate the APK list</td></tr>
+          <tr><td><strong>A</strong> / tap a game</td><td>Launch selected APK</td></tr>
+          <tr><td><strong>X</strong></td><td>Reinstall + launch (re-extracts the APK)</td></tr>
+          <tr><td><strong>Y</strong></td><td>Rescan the APK folder</td></tr>
+          <tr><td><strong>−</strong></td><td>About screen (credits, scrollable via D-pad/stick/touch)</td></tr>
+          <tr><td><strong>+</strong></td><td>Quit</td></tr>
+          <tr><td><strong>B</strong></td><td>Back (on result/about screens)</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="architecture">
+      <h2>Architecture — launcher + Translation Core</h2>
+      <p>Android Horizon is split into two pieces, in two separate repos, that chain-load into each other rather than being one monolithic binary:</p>
+      <div class="repo-links">
+        <div class="card">
+          <h3><a href="https://github.com/AndroidHorizon/AndroidHorizonNX">AndroidHorizonNX</a></h3>
+          <p>Builds <code>AndroidHorizonNX.nro</code> — the picker. Scans <code>sdmc:/AndroidHorizonNX/apks/</code>, tags each APK by native ABI, shows the list, and on launch hands off to the right engine via <code>envSetNextLoad(path, argv)</code>, passing the package name as <code>argv[1]</code>. No ELF loader, JNI shim, or game-engine code of its own.</p>
+        </div>
+        <div class="card">
+          <h3><a href="https://github.com/AndroidHorizon/AHNX-Translation-Core">AHNX-Translation-Core</a></h3>
+          <p>Builds <code>AHNX-Translation-Core-x64.nro</code> — the real engine: ELF loading, JIT, the JNI/Bionic compat layer, audio, sensors. Always expects a package name in <code>argv[1]</code>; not meant to run standalone. Also builds an <code>-x32</code> placeholder — 32-bit games aren't supported yet (no public AArch32 libnx toolchain).</p>
+        </div>
+      </div>
+      <p style="margin-top:18px">Why split it this way: a Switch process runs in one execution state (AArch64 or AArch32) for its whole lifetime, so the picker and a hypothetical future 32-bit engine can't be one process. Splitting the picker from the engine means adding a real 32-bit engine later is "point the launcher at a new NRO," not "rewrite everything." Splitting them into separate <em>repos</em> keeps the launcher (small, stable) decoupled from the engine (where almost all development happens) — "the app won't launch" and "the game crashes" issues land in the right place.</p>
+    </section>
+
+    <section id="building">
+      <h2>Building from source</h2>
+      <p>Requires <a href="https://devkitpro.org/">devkitPro</a> with <code>devkitA64</code> and <code>libnx</code> installed.</p>
+      <p>Android Horizon is split across two repositories as well as two NRO binaries — clone both as siblings to build everything and get a drag-to-SD-card layout:</p>
+      <pre><code>export DEVKITPRO=/opt/devkitpro
+git clone https://github.com/AndroidHorizon/AndroidHorizonNX.git
+git clone https://github.com/AndroidHorizon/AHNX-Translation-Core.git
+cd AndroidHorizonNX
+./build_all.sh</code></pre>
+      <p>Output: <code>testingbuild/AndroidHorizonNX.nro</code> (copy to <code>sdmc:/switch/</code>) and <code>testingbuild/AndroidHorizonNX/</code> (copy the whole folder to <code>sdmc:/switch/AndroidHorizonNX/</code>).</p>
+      <p>Just want the launcher on its own? <code>make</code> in the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX">AndroidHorizonNX</a> repo builds <code>AndroidHorizonNX.nro</code> by itself.</p>
+      <h3>Dependencies (via pacman/devkitPro)</h3>
+      <pre><code>switch-sdl2 switch-sdl2_image switch-sdl2_ttf
+switch-libpng switch-libjpeg-turbo switch-minizip
+switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
+      <p><strong>Prebuilt releases</strong> (no toolchain needed) are published on the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Releases page</a> — each one bundles the launcher plus both Translation Core builds, ready to drag onto an SD card. Releases are built and published automatically by a GitHub Actions workflow (manually triggered by org staff) that also generates an in-depth changelog and refreshes the in-app contributor credits from every repo in the org.</p>
+    </section>
+
+    <section id="forwarders">
+      <h2>Forwarders — a dedicated home-menu icon per game</h2>
+      <p>Android Horizon can boot straight into one specific game, skipping the app-list picker entirely — the same idea as a RetroArch forwarder that jumps straight into a ROM+core instead of RetroArch's own content browser.</p>
+      <p>Pass the game's package name (e.g. <code>com.fingersoft.hillclimb</code>) as the first argument when launching <code>AndroidHorizonNX.nro</code>. This uses libnx's standard <code>envSetNextLoad(path, argv)</code> chain-load mechanism — the same one homebrew forwarders (RetroArch included) use. If the requested package isn't installed, Android Horizon falls back to the normal app-list picker with an on-screen notice.</p>
+    </section>
+
+    <section id="more">
+      <h2>More</h2>
+      <p>The full technical history — every root-caused bug, every hardware measurement, the complete changelog — lives in the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX#readme">AndroidHorizonNX README</a>.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI ·
+    <a href="https://github.com/AndroidHorizon">GitHub org</a> ·
+    <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+  </div>
+</footer>
