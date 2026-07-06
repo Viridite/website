@@ -27,6 +27,18 @@
     font-size: 0.95rem;
     font-family: inherit;
   }
+  .field input[type="file"] {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .field .filename {
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin: 0 0 6px;
+    display: none;
+  }
   .field textarea {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     font-size: 0.82rem;
@@ -97,19 +109,25 @@
 
       <div class="field">
         <label for="launcher_log">launcher_log.txt</label>
-        <p class="hint">Paste the full contents — no length limit here.</p>
+        <p class="hint">Attach the file directly, or paste the full contents below — no length limit here either way.</p>
+        <input type="file" id="launcher_log_file" accept=".txt,text/plain">
+        <p class="filename" id="launcher_log_filename"></p>
         <textarea id="launcher_log" name="launcher_log" required></textarea>
       </div>
 
       <div class="field">
         <label for="compat_log">compat_log.txt</label>
-        <p class="hint">Paste the full contents — no length limit here.</p>
+        <p class="hint">Attach the file directly, or paste the full contents below — no length limit here either way.</p>
+        <input type="file" id="compat_log_file" accept=".txt,text/plain">
+        <p class="filename" id="compat_log_filename"></p>
         <textarea id="compat_log" name="compat_log" required></textarea>
       </div>
 
       <div class="field">
         <label for="core_log">log.txt (Translation Core)</label>
-        <p class="hint">Paste the full contents — no length limit here.</p>
+        <p class="hint">Attach the file directly, or paste the full contents below — no length limit here either way.</p>
+        <input type="file" id="core_log_file" accept=".txt,text/plain">
+        <p class="filename" id="core_log_filename"></p>
         <textarea id="core_log" name="core_log" required></textarea>
       </div>
 
@@ -145,6 +163,32 @@
       }
     })
     .catch(function () {});
+})();
+
+(function () {
+  // Wires each log's file input to read the picked file client-side and
+  // drop its text into the matching textarea — same field the paste path
+  // already fills, so submit() doesn't need to know which one was used.
+  ["launcher_log", "compat_log", "core_log"].forEach(function (id) {
+    var fileInput = document.getElementById(id + "_file");
+    var filenameEl = document.getElementById(id + "_filename");
+    var textarea = document.getElementById(id);
+    fileInput.addEventListener("change", function () {
+      var file = fileInput.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function () {
+        textarea.value = reader.result;
+        filenameEl.textContent = "Loaded " + file.name + " (" + file.size.toLocaleString() + " bytes)";
+        filenameEl.style.display = "block";
+      };
+      reader.onerror = function () {
+        filenameEl.textContent = "Couldn't read " + file.name + " — paste the contents instead.";
+        filenameEl.style.display = "block";
+      };
+      reader.readAsText(file);
+    });
+  });
 })();
 
 (function () {
