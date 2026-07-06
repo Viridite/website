@@ -91,7 +91,7 @@
     <form id="report-form">
       <div class="field">
         <label for="apk_file">The APK</label>
-        <p class="hint">Attach the .apk file directly (up to 20MB), or paste a direct download link below instead. Split/.xapk packages aren't supported yet.</p>
+        <p class="hint">Attach the .apk file directly (uploads straight to storage, no size problem — real APKs run 50-150MB and that's fine), or paste a direct download link below instead. Split/.xapk packages aren't supported yet.</p>
         <input type="file" id="apk_file" accept=".apk">
         <p class="filename" id="apk_file_filename"></p>
         <input type="url" id="apk_url" name="apk_url" placeholder="https://example.com/path/to/game.apk">
@@ -194,42 +194,76 @@
 })();
 
 (function () {
-  var MAX_APK_FILE_BYTES = 20 * 1024 * 1024;
-  var apkFile = { base64: null, filename: null };
+  var RELAY_URL = "https://android-horizon-compat-relay.zeraoralegendary.workers.dev";
+  var MAX_APK_UPLOAD_BYTES = 300 * 1024 * 1024;
+
+  // apkUpload.state: "idle" | "uploading" | "done" | "error"
+  var apkUpload = { state: "idle", objectKey: null };
 
   var apkFileInput = document.getElementById("apk_file");
   var apkFilenameEl = document.getElementById("apk_file_filename");
   var apkUrlInput = document.getElementById("apk_url");
+  var submitBtn = document.querySelector("#report-form button[type=submit]");
+
+  function xhrPut(url, file, onProgress) {
+    return new Promise(function (resolve, reject) {
+      var xhr = new XMLHttpRequest();
+      xhr.open("PUT", url);
+      xhr.upload.addEventListener("progress", function (e) {
+        if (e.lengthComputable) onProgress(e.loaded / e.total);
+      });
+      xhr.onload = function () {
+        if (xhr.status >= 200 && xhr.status < 300) resolve();
+        else reject(new Error("upload failed (HTTP " + xhr.status + ")"));
+      };
+      xhr.onerror = function () { reject(new Error("upload failed (network error)")); };
+      xhr.send(file);
+    });
+  }
 
   apkFileInput.addEventListener("change", function () {
     var file = apkFileInput.files[0];
-    apkFile.base64 = null;
-    apkFile.filename = null;
+    apkUpload.state = "idle";
+    apkUpload.objectKey = null;
     if (!file) { apkFilenameEl.style.display = "none"; return; }
-    if (file.size > MAX_APK_FILE_BYTES) {
-      apkFilenameEl.textContent = file.name + " is over 20MB — use a download link instead.";
+    if (file.size > MAX_APK_UPLOAD_BYTES) {
+      apkFilenameEl.textContent = file.name + " is over " + (MAX_APK_UPLOAD_BYTES / (1024 * 1024)) + "MB — use a download link instead.";
       apkFilenameEl.style.display = "block";
       apkFileInput.value = "";
       return;
     }
-    var reader = new FileReader();
-    reader.onload = function () {
-      // reader.result is "data:<mime>;base64,<data>" — keep just the data.
-      var commaIdx = reader.result.indexOf(",");
-      apkFile.base64 = reader.result.slice(commaIdx + 1);
-      apkFile.filename = file.name;
-      apkFilenameEl.textContent = "Attached " + file.name + " (" + file.size.toLocaleString() + " bytes) — the link field below is ignored while a file is attached.";
-      apkFilenameEl.style.display = "block";
-      apkUrlInput.disabled = true;
-    };
-    reader.onerror = function () {
-      apkFilenameEl.textContent = "Couldn't read " + file.name + " — use a download link instead.";
-      apkFilenameEl.style.display = "block";
-    };
-    reader.readAsDataURL(file);
-  });
 
-  var RELAY_URL = "https://android-horizon-compat-relay.zeraoralegendary.workers.dev";
+    apkUpload.state = "uploading";
+    apkUrlInput.disabled = true;
+    submitBtn.disabled = true;
+    apkFilenameEl.style.display = "block";
+    apkFilenameEl.textContent = "Uploading " + file.name + "… 0%";
+
+    fetch(RELAY_URL + "/apk-upload-url", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename: file.name }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (result) {
+        if (!result.ok) throw new Error(result.error || "couldn't get an upload URL");
+        return xhrPut(result.upload_url, file, function (fraction) {
+          apkFilenameEl.textContent = "Uploading " + file.name + "… " + Math.round(fraction * 100) + "%";
+        }).then(function () { return result.object_key; });
+      })
+      .then(function (objectKey) {
+        apkUpload.state = "done";
+        apkUpload.objectKey = objectKey;
+        apkFilenameEl.textContent = "Uploaded " + file.name + " (" + file.size.toLocaleString() + " bytes) — the link field below is ignored while a file is attached.";
+        submitBtn.disabled = false;
+      })
+      .catch(function (e) {
+        apkUpload.state = "error";
+        apkFilenameEl.textContent = "Couldn't upload " + file.name + " (" + e.message + ") — try again, or use a download link instead.";
+        apkUrlInput.disabled = false;
+        submitBtn.disabled = false;
+      });
+  });
 
   var form = document.getElementById("report-form");
   var status = document.getElementById("status");
@@ -237,7 +271,12 @@
   form.addEventListener("submit", function (ev) {
     ev.preventDefault();
 
-    if (!apkFile.base64 && !apkUrlInput.value.trim()) {
+    if (apkUpload.state === "uploading") {
+      status.className = "err";
+      status.textContent = "Still uploading the APK — wait for it to finish.";
+      return;
+    }
+    if (apkUpload.state !== "done" && !apkUrlInput.value.trim()) {
       status.className = "err";
       status.textContent = "Attach the APK file or paste a download link.";
       return;
@@ -251,14 +290,12 @@
       core_log: document.getElementById("core_log").value,
       notes: document.getElementById("notes").value,
     };
-    if (apkFile.base64) {
-      payload.apk_file_base64 = apkFile.base64;
-      payload.apk_filename = apkFile.filename;
+    if (apkUpload.state === "done") {
+      payload.apk_object_key = apkUpload.objectKey;
     } else {
       payload.apk_url = apkUrlInput.value.trim();
     }
 
-    var submitBtn = form.querySelector("button[type=submit]");
     submitBtn.disabled = true;
     status.className = "pending";
     status.textContent = "Submitting…";
@@ -274,8 +311,8 @@
           status.className = "ok";
           status.textContent = "Submitted! It'll be analyzed automatically — check the compatibility page in a few minutes.";
           form.reset();
-          apkFile.base64 = null;
-          apkFile.filename = null;
+          apkUpload.state = "idle";
+          apkUpload.objectKey = null;
           apkUrlInput.disabled = false;
           apkFilenameEl.style.display = "none";
         } else {
