@@ -24,7 +24,7 @@
 //                            either way — then fires a repository_dispatch
 //                            on AndroidHorizonNX to kick off analysis.
 
-const ALLOWED_ORIGIN = "https://androidhorizon.github.io";
+const ALLOWED_ORIGIN = "https://androidhorizon.aaronworld.uk";
 const OWNER = "AndroidHorizon";
 const REPORTS_REPO = "compat-reports";
 const LAUNCHER_REPO = "AndroidHorizonNX";

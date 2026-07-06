@@ -188,7 +188,7 @@
       .catch(function () { return { title: r.title, logins: [] }; });
   });
 
-  var testers = fetch("https://raw.githubusercontent.com/AndroidHorizon/compat-reports/main/data/games.json")
+  var testers = fetch("https://raw.githubusercontent.com/AndroidHorizon/compat-reports/main/data/games.json?v=" + Date.now())
     .then(function (r) { return r.ok ? r.json() : []; })
     .then(function (games) {
       var seen = {}, logins = [];
