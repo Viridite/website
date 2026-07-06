@@ -1,0 +1,28 @@
+name: Deploy to Cloudflare Pages
+
+# Static site, no build step — every push to main just gets published
+# as-is. Moved off GitHub Pages because its CDN caching made pushes take
+# too long to actually show up live; Cloudflare Pages deploys are fast and
+# this account already runs the compat-submission Worker + R2 bucket.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: android-horizon-website
+          directory: .
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
