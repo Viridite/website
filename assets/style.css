@@ -73,12 +73,12 @@
   :root {
     --bg:        #0e0d30;
     --bg-alt:    #121047;
-    --surface:   #171560;
-    --surface-2: #1d1a70;
+    --surface:   #1a1768;
+    --surface-2: #211d80;
     --text:      #e9edf1;
     --text-dim:  #a8aed6;
     --text-mute: #7d82b0;
-    --border:    #2e2b7a;
+    --border:    #433d9e;
     --accent:    #34e186;
     --accent-hover:#5ce89d;
     --accent-ink:#04140c;
@@ -86,9 +86,14 @@
     --warn-bg:   rgba(240, 185, 77, 0.14);
     --danger:    #ff6b7f;
     --danger-bg: rgba(255, 107, 127, 0.14);
-    --shadow-sm: 0 1px 2px rgba(4, 3, 20, 0.45);
-    --shadow-md: 0 8px 24px rgba(4, 3, 20, 0.45);
-    --shadow-lg: 0 24px 60px rgba(4, 3, 20, 0.6);
+    /* A literal drop shadow barely registers when the page itself is
+       already near-black — nothing for it to read as "darker than."
+       Elevation here comes from the (now much brighter) border above;
+       these just add a soft ambient glow instead of trying to fake a cast
+       shadow that dark-on-dark can't actually show. */
+    --shadow-sm: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 2px 6px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 10px 28px rgba(0, 0, 0, 0.35);
+    --shadow-lg: 0 1px 0 rgba(255, 255, 255, 0.05) inset, 0 26px 60px rgba(0, 0, 0, 0.45);
     color-scheme: dark;
   }
 }
@@ -255,13 +260,13 @@ nav.site a.cta:hover { background: var(--accent-hover); color: var(--accent-ink)
 
 main { padding: var(--sp-2) 0 var(--sp-20); }
 
-.hero { text-align: center; padding: var(--sp-16) 0 var(--sp-2); }
-.hero.compact { padding: var(--sp-10) 0 var(--sp-2); }
+.hero { text-align: center; padding: var(--sp-12) 0 var(--sp-2); }
+.hero.compact { padding: var(--sp-8) 0 var(--sp-2); }
 
 .hero img.logo-lg {
-  width: 92px; height: 92px;
+  width: 84px; height: 84px;
   border-radius: var(--radius-lg);
-  margin-bottom: var(--sp-6);
+  margin-bottom: var(--sp-5);
   box-shadow: var(--shadow-lg);
 }
 
@@ -270,8 +275,8 @@ main { padding: var(--sp-2) 0 var(--sp-20); }
 .hero p.tagline {
   font-size: var(--fs-lg);
   color: var(--text-dim);
-  max-width: 640px;
-  margin: var(--sp-4) auto var(--sp-8);
+  max-width: 620px;
+  margin: var(--sp-3) auto var(--sp-6);
 }
 
 .btn-row { display: flex; gap: var(--sp-3); justify-content: center; flex-wrap: wrap; margin-bottom: var(--sp-2); }
@@ -308,7 +313,7 @@ main { padding: var(--sp-2) 0 var(--sp-20); }
 .callout.warn { border-color: color-mix(in srgb, var(--warn) 45%, var(--border)); background: var(--warn-bg); }
 .callout.warn strong { color: var(--warn); }
 
-section { margin: var(--sp-16) 0; }
+section { margin: var(--sp-12) 0; }
 section h2 {
   display: flex; align-items: center; gap: var(--sp-3);
   margin-bottom: var(--sp-5);
@@ -330,9 +335,21 @@ section h3 { margin-top: var(--sp-6); }
 
 .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--sp-4); }
 .shots figure { margin: 0; }
-.shots .frame { border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow-sm); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+.shots .frame {
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  /* Real hardware captures vary wildly in content (a loading screen at
+     frame 30 is mostly solid black; a menu screen is colorful) — without
+     a background of its own, a dark capture visually disappears into a
+     dark page instead of reading as a deliberate screenshot. */
+  background: var(--bg-alt);
+  aspect-ratio: 16 / 10;
+}
 .shots .frame:hover { transform: translateY(-4px) scale(1.01); box-shadow: var(--shadow-md); }
-.shots img { width: 100%; }
+.shots img { width: 100%; height: 100%; object-fit: cover; }
 .shots figcaption { font-size: var(--fs-xs); color: var(--text-mute); text-align: center; margin-top: var(--sp-2); }
 
 .repo-links { display: flex; gap: var(--sp-4); flex-wrap: wrap; }
