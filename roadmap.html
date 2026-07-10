@@ -1,0 +1,129 @@
+<title>Roadmap — Android Horizon</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="What's planned, in progress, and done across Android Horizon's launcher, cores engine, compat-reports, and website.">
+<meta property="og:title" content="Android Horizon — Roadmap">
+<meta property="og:description" content="What's planned, in progress, and done across Android Horizon's launcher, cores engine, compat-reports, and website.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://androidhorizon.aaronworld.uk/roadmap.html">
+<link rel="icon" href="assets/img/logo.jpg">
+<link rel="stylesheet" href="assets/style.css">
+
+<header class="site">
+  <div class="wrap">
+    <img class="logo" src="assets/img/logo.jpg" alt="">
+    <span class="brand">Android <span>Horizon</span></span>
+    <nav class="site">
+      <a href="index.html">Home</a>
+      <a href="compatibility.html">Compatibility</a>
+      <a href="roadmap.html" class="active">Roadmap</a>
+      <a href="credits.html">Credits</a>
+      <a href="docs/index.html">Docs</a>
+      <a href="https://github.com/AndroidHorizon">GitHub</a>
+      <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="hero" style="padding-top:40px">
+      <h1 style="font-size:clamp(1.8rem,3.6vw,2.6rem)">Roadmap</h1>
+      <p class="tagline">What's planned, in progress, and done — across the launcher, the AHNX Translation Core engine, compat-reports, and this website.</p>
+      <div class="btn-row">
+        <a class="btn primary" href="https://github.com/orgs/AndroidHorizon/projects/1" target="_blank" rel="noopener">Open the live project board</a>
+      </div>
+    </div>
+
+    <div class="callout" id="roadmap-stale-notice" style="display:none">
+      This is a snapshot of the live <a href="https://github.com/orgs/AndroidHorizon/projects/1" target="_blank" rel="noopener">GitHub Project board</a>, copied in manually rather than fetched live (the board's data isn't safe to query straight from a public page without exposing a token) — <span id="roadmap-age"></span>. For anything more current, the project board itself is always up to date.
+    </div>
+
+    <section>
+      <div class="board" id="roadmap-board">
+        <div class="board-col">
+          <h3>In progress</h3>
+          <div class="board-items" id="col-in-progress"></div>
+        </div>
+        <div class="board-col">
+          <h3>Todo</h3>
+          <div class="board-items" id="col-todo"></div>
+        </div>
+        <div class="board-col">
+          <h3>Done</h3>
+          <div class="board-items" id="col-done"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
+    <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
+    <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var TEAM_CLASS = {
+    "Cores Team": "team-cores",
+    "Website Team": "team-website",
+    "Official Testing Team": "team-testing"
+  };
+
+  function card(item) {
+    var el = document.createElement("div");
+    el.className = "card board-item";
+    var teamClass = TEAM_CLASS[item.team] || "team-other";
+    el.innerHTML =
+      '<span class="pill team-pill ' + teamClass + '">' + (item.team || "Unassigned") + "</span>" +
+      "<h4>" + item.title + "</h4>" +
+      "<p>" + item.body + "</p>";
+    return el;
+  }
+
+  fetch("data/roadmap.json?v=" + Date.now())
+    .then(function (r) { if (!r.ok) throw new Error("fetch failed"); return r.json(); })
+    .then(function (data) {
+      var cols = { "In progress": document.getElementById("col-in-progress"),
+                   "Todo": document.getElementById("col-todo"),
+                   "Done": document.getElementById("col-done") };
+      data.items.forEach(function (item) {
+        var col = cols[item.status] || cols["Todo"];
+        col.appendChild(card(item));
+      });
+
+      var notice = document.getElementById("roadmap-stale-notice");
+      var ageEl = document.getElementById("roadmap-age");
+      if (data.generated_at) {
+        var days = Math.floor((Date.now() - new Date(data.generated_at)) / 86400000);
+        ageEl.textContent = days <= 0 ? "last updated today" : "last updated " + days + " day" + (days === 1 ? "" : "s") + " ago";
+        notice.style.display = "block";
+      }
+    })
+    .catch(function () {
+      document.getElementById("roadmap-board").innerHTML =
+        '<p class="card">Couldn\'t load the roadmap snapshot — see the <a href="https://github.com/orgs/AndroidHorizon/projects/1" target="_blank" rel="noopener">live project board</a> instead.</p>';
+    });
+})();
+</script>
+
+<script>
+(function () {
+  var ONLINE_THRESHOLD = 25;
+  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
+        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
+      }
+    })
+    .catch(function () {});
+})();
+</script>

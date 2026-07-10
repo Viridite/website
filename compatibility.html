@@ -16,6 +16,7 @@
     <nav class="site">
       <a href="index.html">Home</a>
       <a href="compatibility.html" class="active">Compatibility</a>
+      <a href="roadmap.html">Roadmap</a>
       <a href="credits.html">Credits</a>
       <a href="docs/index.html">Docs</a>
       <a href="https://github.com/AndroidHorizon">GitHub</a>
@@ -45,6 +46,21 @@
       <div id="community-reports-empty" class="card" style="display:none">
         <p style="margin:0">Nothing submitted yet — this list fills in as people test games and <a href="submit.html">report back</a>. Be the first.</p>
       </div>
+
+      <div id="community-reports-controls" class="compat-controls" style="display:none">
+        <input type="search" id="compat-search" class="search-input" placeholder="Search games, packages, publishers…" aria-label="Search compatibility list">
+        <select id="compat-sort" class="sort-select" aria-label="Sort compatibility list">
+          <option value="name">Sort: Name (A–Z)</option>
+          <option value="status">Sort: Best status first</option>
+          <option value="recent">Sort: Recently updated</option>
+        </select>
+        <div class="tabs" role="tablist" aria-label="Filter by architecture">
+          <button type="button" class="tab active" data-arch="all" role="tab" aria-selected="true">All</button>
+          <button type="button" class="tab" data-arch="x64" role="tab" aria-selected="false">64-bit</button>
+          <button type="button" class="tab" data-arch="x32" role="tab" aria-selected="false">32-bit</button>
+        </div>
+      </div>
+
       <div id="community-reports-table" class="table-wrap" style="display:none">
         <table>
           <thead>
@@ -53,6 +69,9 @@
           <tbody id="community-reports-tbody"></tbody>
         </table>
       </div>
+      <p id="community-reports-noresults" class="card" style="display:none;margin-top:16px">
+        <span style="color:var(--text-mute)">No games match that search/filter.</span>
+      </p>
     </section>
 
     <section>
@@ -104,8 +123,22 @@
   var RAW_BASE = "https://raw.githubusercontent.com/AndroidHorizon/compat-reports/main/";
   var loading = document.getElementById("community-reports-loading");
   var empty = document.getElementById("community-reports-empty");
+  var controls = document.getElementById("community-reports-controls");
   var tableWrap = document.getElementById("community-reports-table");
   var tbody = document.getElementById("community-reports-tbody");
+  var noResults = document.getElementById("community-reports-noresults");
+  var searchInput = document.getElementById("compat-search");
+  var sortSelect = document.getElementById("compat-sort");
+  var tabs = controls ? controls.querySelectorAll(".tab") : [];
+
+  // Seed list for the family-friendly blur — there's no free/reliable API
+  // that maps a bare Android package name to a PEGI rating, so this is a
+  // small, manually curated set of known-mature package names rather than
+  // a live lookup. Add to it as mature-rated games get submitted; anything
+  // not listed here renders normally. Keyed by package_name.
+  var MATURE_PACKAGES = {
+    // "com.example.somegta": 18,
+  };
 
   function pillClass(verdict) {
     if (verdict === "ok") return "pill ok";
@@ -113,9 +146,80 @@
     return "pill";
   }
 
-  // raw.githubusercontent.com sits behind its own CDN cache — a cache-
-  // busting query string forces a fresh fetch instead of a stale cached
-  // copy of games.json each time this page loads.
+  // Reverse-domain package names put the publisher right after "com."/"net"/etc
+  // (com.kiloo.subwaysurf -> "kiloo"). Best-effort only — some package names
+  // (com.colorswitch.switch2) put the product name there instead of a real
+  // studio name, which is a data-quality limit, not a parsing bug.
+  function publisherKey(pkg) {
+    var parts = (pkg || "").split(".");
+    return (parts.length >= 2 ? parts[1] : (parts[0] || "?")).toLowerCase();
+  }
+  function publisherLabel(key) {
+    return key.charAt(0).toUpperCase() + key.slice(1);
+  }
+
+  // Cheap subsequence fuzzy match — no build step on this site, so no
+  // fuzzy-search library; this is plenty for a few dozen rows. Returns a
+  // score (lower = better) or -1 for no match.
+  function fuzzyScore(haystack, needle) {
+    if (!needle) return 0;
+    haystack = haystack.toLowerCase();
+    needle = needle.toLowerCase();
+    var hi = 0, score = 0, streak = 0;
+    for (var i = 0; i < needle.length; i++) {
+      var idx = haystack.indexOf(needle[i], hi);
+      if (idx === -1) return -1;
+      score += (idx - hi) - streak;
+      streak = 1;
+      hi = idx + 1;
+    }
+    return score;
+  }
+
+  function verdictRank(v) {
+    if (v === "ok") return 0;
+    if (v === "issues") return 1;
+    return 2; // fail / unknown
+  }
+
+  function buildRow(entry, isSecondary) {
+    var tr = document.createElement("tr");
+    if (isSecondary) tr.className = "version-row";
+
+    var nameTd = document.createElement("td");
+    var mature = MATURE_PACKAGES.hasOwnProperty(entry.package_name);
+    var iconSrc = entry.icon ? RAW_BASE + entry.icon : "";
+    var iconHtml = iconSrc
+      ? '<span class="icon-wrap' + (mature ? " blurred" : "") + '"><img src="' + iconSrc + '" alt="" width="32" height="32" loading="lazy">' +
+        (mature ? '<span class="mature-badge" title="PEGI 18 — click to reveal">18+</span>' : "") + "</span>"
+      : "";
+    var nameHtml = mature
+      ? '<strong class="blurred-text" title="PEGI 18 — click to reveal">' + entry.game_name + "</strong>"
+      : "<strong>" + entry.game_name + "</strong>";
+    nameTd.innerHTML = iconHtml + nameHtml + "<br><span style=\"color:var(--text-mute);font-size:0.85rem\">" + entry.package_name + " · " + entry.version_name + "</span>";
+    if (mature) {
+      nameTd.classList.add("mature-row");
+      nameTd.addEventListener("click", function revealOnce() {
+        nameTd.classList.remove("mature-row");
+        nameTd.removeEventListener("click", revealOnce);
+      });
+    }
+
+    var statusTd = document.createElement("td");
+    statusTd.innerHTML = '<span class="' + pillClass(entry.verdict) + '">' + entry.verdict_label + "</span>";
+
+    var detailsTd = document.createElement("td");
+    var reportUrl = "https://github.com/AndroidHorizon/compat-reports/blob/main/" + entry.report_path;
+    var submitter = entry.submitted_by ? ("@" + entry.submitted_by + " from " + entry.source_site) : ("from " + entry.source_site);
+    detailsTd.innerHTML = entry.summary + ' — <a href="' + reportUrl + '">full report + logs</a>' +
+      ' <span style="color:var(--text-mute)">(submitted ' + submitter + ")</span>";
+
+    tr.appendChild(nameTd);
+    tr.appendChild(statusTd);
+    tr.appendChild(detailsTd);
+    return tr;
+  }
+
   fetch(RAW_BASE + "data/games.json?v=" + Date.now())
     .then(function (r) { if (!r.ok) throw new Error("fetch failed"); return r.json(); })
     .then(function (games) {
@@ -124,30 +228,104 @@
         empty.style.display = "block";
         return;
       }
+
+      // Group every submitted version under its package_name; only the arch
+      // (defaults to x64 — 32-bit APKs are blocked before they can ever run,
+      // so nothing here is x32 yet, but the field is respected once the
+      // compat-report pipeline starts emitting it) filters between tabs.
+      var byPkg = {};
       games.forEach(function (g) {
-        var tr = document.createElement("tr");
-
-        var nameTd = document.createElement("td");
-        var iconHtml = g.icon
-          ? '<img src="' + RAW_BASE + g.icon + '" alt="" width="32" height="32" style="border-radius:8px;vertical-align:middle;margin-right:10px">'
-          : "";
-        nameTd.innerHTML = iconHtml + "<strong>" + g.game_name + "</strong><br><span style=\"color:var(--text-mute);font-size:0.85rem\">" + g.package_name + " · " + g.version_name + "</span>";
-
-        var statusTd = document.createElement("td");
-        statusTd.innerHTML = '<span class="' + pillClass(g.verdict) + '">' + g.verdict_label + "</span>";
-
-        var detailsTd = document.createElement("td");
-        var reportUrl = "https://github.com/AndroidHorizon/compat-reports/blob/main/" + g.report_path;
-        var submitter = g.submitted_by ? ("@" + g.submitted_by + " from " + g.source_site) : ("from " + g.source_site);
-        detailsTd.innerHTML = g.summary + ' — <a href="' + reportUrl + '">full report + logs</a>' +
-          ' <span style="color:var(--text-mute)">(submitted ' + submitter + ")</span>";
-
-        tr.appendChild(nameTd);
-        tr.appendChild(statusTd);
-        tr.appendChild(detailsTd);
-        tbody.appendChild(tr);
+        (byPkg[g.package_name] = byPkg[g.package_name] || []).push(g);
       });
-      tableWrap.style.display = "block";
+      var groups = Object.keys(byPkg).map(function (pkg) {
+        var versions = byPkg[pkg].slice().sort(function (a, b) {
+          return new Date(b.submitted_at) - new Date(a.submitted_at);
+        });
+        return { pkg: pkg, publisher: publisherKey(pkg), versions: versions, primary: versions[0] };
+      });
+
+      controls.style.display = "flex";
+
+      function render() {
+        var q = (searchInput.value || "").trim();
+        var sortMode = sortSelect.value;
+        var activeArch = controls.querySelector(".tab.active").getAttribute("data-arch");
+
+        var filtered = groups.map(function (g) {
+          var arch = g.primary.arch || "x64";
+          if (activeArch !== "all" && arch !== activeArch) return null;
+          if (!q) return { group: g, score: 0 };
+          var score = fuzzyScore(g.primary.game_name + " " + g.pkg + " " + publisherLabel(g.publisher), q);
+          return score === -1 ? null : { group: g, score: score };
+        }).filter(Boolean);
+
+        if (sortMode === "name") {
+          filtered.sort(function (a, b) { return a.group.primary.game_name.localeCompare(b.group.primary.game_name); });
+        } else if (sortMode === "status") {
+          filtered.sort(function (a, b) { return verdictRank(a.group.primary.verdict) - verdictRank(b.group.primary.verdict); });
+        } else if (sortMode === "recent") {
+          filtered.sort(function (a, b) { return new Date(b.group.primary.submitted_at) - new Date(a.group.primary.submitted_at); });
+        } else {
+          filtered.sort(function (a, b) { return a.score - b.score; });
+        }
+
+        // Publisher grouping — a <th colspan> header row per publisher,
+        // in the same order the filtered/sorted games already fell into
+        // (first game of each new publisher triggers a new header).
+        tbody.innerHTML = "";
+        var seenPublisher = null;
+        filtered.forEach(function (item) {
+          var g = item.group;
+          if (g.publisher !== seenPublisher) {
+            seenPublisher = g.publisher;
+            var htr = document.createElement("tr");
+            htr.className = "publisher-row";
+            var hth = document.createElement("th");
+            hth.colSpan = 3;
+            hth.textContent = publisherLabel(g.publisher);
+            htr.appendChild(hth);
+            tbody.appendChild(htr);
+          }
+
+          tbody.appendChild(buildRow(g.primary, false));
+
+          if (g.versions.length > 1) {
+            var toggleTr = document.createElement("tr");
+            var toggleTd = document.createElement("td");
+            toggleTd.colSpan = 3;
+            toggleTd.className = "version-toggle";
+            toggleTd.textContent = "▾ " + (g.versions.length - 1) + " older version" + (g.versions.length - 1 === 1 ? "" : "s") + " tested";
+            toggleTr.appendChild(toggleTd);
+            tbody.appendChild(toggleTr);
+
+            var olderRows = g.versions.slice(1).map(function (v) { return buildRow(v, true); });
+            olderRows.forEach(function (r) { r.style.display = "none"; tbody.appendChild(r); });
+
+            toggleTd.addEventListener("click", function () {
+              var open = olderRows[0].style.display !== "none";
+              olderRows.forEach(function (r) { r.style.display = open ? "none" : "table-row"; });
+              toggleTd.textContent = (open ? "▾ " : "▴ ") + (g.versions.length - 1) + " older version" + (g.versions.length - 1 === 1 ? "" : "s") + (open ? " tested" : " — hide");
+            });
+          }
+        });
+
+        var anyRows = filtered.length > 0;
+        tableWrap.style.display = anyRows ? "block" : "none";
+        noResults.style.display = anyRows ? "none" : "block";
+      }
+
+      searchInput.addEventListener("input", render);
+      sortSelect.addEventListener("change", render);
+      tabs.forEach(function (t) {
+        t.addEventListener("click", function () {
+          tabs.forEach(function (o) { o.classList.remove("active"); o.setAttribute("aria-selected", "false"); });
+          t.classList.add("active");
+          t.setAttribute("aria-selected", "true");
+          render();
+        });
+      });
+
+      render();
     })
     .catch(function () {
       loading.style.display = "none";
