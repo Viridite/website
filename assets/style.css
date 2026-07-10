@@ -344,6 +344,89 @@ th {
 .pill.ok  { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); }
 .pill.no  { color: var(--danger); background: color-mix(in srgb, var(--danger) 14%, transparent); }
 
+/* ---------- Compatibility list controls (search / sort / arch tabs) ---------- */
+
+.compat-controls {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.search-input, .sort-select {
+  font: inherit;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.search-input { flex: 1 1 220px; min-width: 180px; }
+.search-input:focus, .sort-select:focus { outline: 2px solid color-mix(in srgb, var(--accent) 50%, transparent); outline-offset: 1px; }
+
+.tabs { display: inline-flex; gap: 4px; background: var(--surface-2); border-radius: var(--radius-pill); padding: 4px; }
+
+.tab {
+  font: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 7px 16px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.tab:hover { color: var(--text); }
+.tab.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-sm); }
+
+/* ---------- Publisher grouping / version dropdown ---------- */
+
+tr.publisher-row th {
+  background: var(--bg-alt);
+  color: var(--text-mute);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 10px 18px;
+}
+
+tr.version-row td { background: var(--bg-alt); }
+
+.version-toggle {
+  cursor: pointer;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+  background: var(--bg-alt);
+}
+.version-toggle:hover { text-decoration: underline; }
+
+/* ---------- PEGI-18 blur ---------- */
+
+.icon-wrap { position: relative; display: inline-block; vertical-align: middle; margin-right: 10px; }
+.icon-wrap img { border-radius: 8px; }
+.icon-wrap.blurred img { filter: blur(8px); }
+.mature-badge {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.45);
+  border-radius: 8px;
+}
+
+.blurred-text { filter: blur(5px); transition: filter 0.15s ease; }
+.mature-row { cursor: pointer; }
+.mature-row:hover .blurred-text, .mature-row:hover .icon-wrap.blurred img { filter: blur(3px); }
+
 /* ---------- Code ---------- */
 
 code, pre {
