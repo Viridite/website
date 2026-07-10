@@ -427,6 +427,38 @@ tr.version-row td { background: var(--bg-alt); }
 .mature-row { cursor: pointer; }
 .mature-row:hover .blurred-text, .mature-row:hover .icon-wrap.blurred img { filter: blur(3px); }
 
+/* ---------- Roadmap board ---------- */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  align-items: start;
+}
+
+.board-col h3 {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-mute);
+  margin: 0 0 14px;
+}
+
+.board-items { display: flex; flex-direction: column; gap: 14px; }
+
+.board-item h4 { margin: 10px 0 6px; font-size: 1rem; }
+.board-item p { margin: 0; color: var(--text-dim); font-size: 0.9rem; }
+
+.team-pill { font-size: 0.72rem; padding: 3px 10px; }
+.team-cores    { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); }
+.team-website  { color: #3b82f6; background: color-mix(in srgb, #3b82f6 16%, transparent); }
+.team-testing  { color: var(--warn); background: color-mix(in srgb, var(--warn) 16%, transparent); }
+.team-other    { color: var(--text-mute); background: var(--surface-2); }
+
+@media (max-width: 900px) {
+  .board { grid-template-columns: 1fr; }
+}
+
 /* ---------- Code ---------- */
 
 code, pre {
