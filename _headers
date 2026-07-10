@@ -8,3 +8,16 @@
 # off that request.
 /*
   Cache-Control: no-cache
+
+# Cloudflare Pages applies its own higher-priority default caching to
+# known static-asset file types (css/js/images) that the generic /* rule
+# above didn't win against in testing — explicit, more specific paths to
+# force it.
+/assets/*
+  Cache-Control: no-cache
+/data/*
+  Cache-Control: no-cache
+/*.css
+  Cache-Control: no-cache
+/*.js
+  Cache-Control: no-cache
