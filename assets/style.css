@@ -1,6 +1,17 @@
 /* Design tokens — light is the default, dark via prefers-color-scheme.
    Philosophy: lots of air, soft rounded surfaces, a single confident accent,
-   restrained shadows instead of hard borders. */
+   restrained shadows instead of hard borders.
+
+   Palette sampled directly from the app logo (assets/img/logo.jpg): a deep
+   indigo night sky (#0e0d35 corners / #17165a mid) behind a bright green
+   planet horizon (#31e783 highlight down to #21b74c shadow). The logo's own
+   brightest green fails contrast against white (1.6:1) and even its
+   darkest sampled tone only just clears "large text" (2.6:1), so the light
+   accent below is a darkened descendant of that same green tuned to pass
+   WCAG AA (4.1:1) rather than a literal pixel value — still unmistakably
+   the same hue. Dark mode's background scale uses the logo's actual sky
+   navy instead of a generic near-black, since nothing stopped it from just
+   being the real color. */
 :root {
   --bg:          #ffffff;
   --bg-alt:      #f7f8fa;
@@ -10,7 +21,7 @@
   --text-dim:    #536471;
   --text-mute:   #8b98a5;
   --border:      #e7e9ec;
-  --accent:      #0e9f6e;
+  --accent:      #168f4f;
   --accent-ink:  #ffffff;
   --warn:        #a15c00;
   --warn-bg:     #fff3e0;
@@ -28,22 +39,22 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg:        #0b0c10;
-    --bg-alt:    #111318;
-    --surface:   #16181f;
-    --surface-2: #1c1f28;
+    --bg:        #0e0d30;
+    --bg-alt:    #121047;
+    --surface:   #171560;
+    --surface-2: #1d1a70;
     --text:      #e9edf1;
-    --text-dim:  #9aa4b1;
-    --text-mute: #6b7480;
-    --border:    #262a33;
-    --accent:    #3ee08a;
+    --text-dim:  #a8aed6;
+    --text-mute: #7d82b0;
+    --border:    #2e2b7a;
+    --accent:    #34e186;
     --accent-ink:#04140c;
     --warn:      #f0b94d;
-    --warn-bg:   rgba(240, 185, 77, 0.12);
+    --warn-bg:   rgba(240, 185, 77, 0.14);
     --danger:    #ff6b7f;
-    --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
-    --shadow-md: 0 8px 24px rgba(0,0,0,0.35);
-    --shadow-lg: 0 24px 60px rgba(0,0,0,0.5);
+    --shadow-sm: 0 1px 2px rgba(4, 3, 20, 0.45);
+    --shadow-md: 0 8px 24px rgba(4, 3, 20, 0.45);
+    --shadow-lg: 0 24px 60px rgba(4, 3, 20, 0.6);
     color-scheme: dark;
   }
 }
