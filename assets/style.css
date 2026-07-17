@@ -287,11 +287,12 @@ main { padding: var(--sp-2) 0 var(--sp-20); }
 .hero.compact::before { display: none; }
 
 .hero img.logo-lg {
-  width: 104px; height: 104px;
+  width: 116px; height: 116px;
+  display: block;
+  margin: 0 auto var(--sp-5);   /* block img isn't centred by text-align — do it here */
   border-radius: var(--radius-lg);
-  margin-bottom: var(--sp-5);
-  background: #fff;            /* gem logo sits on white by design */
-  padding: 12px;
+  background: #fff;             /* logo is designed to sit on white */
+  padding: 0;                   /* gem sits flush in the tile, no gap */
   box-shadow: var(--shadow-lg), 0 0 48px color-mix(in srgb, var(--accent) 42%, transparent);
 }
 
