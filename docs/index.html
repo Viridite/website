@@ -7,7 +7,7 @@
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://viridite.aaronworld.uk/docs/index.html">
 <link rel="icon" href="../assets/img/logo.svg">
-<link rel="stylesheet" href="../assets/style.css?v=6">
+<link rel="stylesheet" href="../assets/style.css?v=7">
 
 <header class="site">
   <div class="wrap bar">
@@ -92,8 +92,8 @@
               <p>Builds <code>AndroidHorizonNX.nro</code> — the picker. Scans <code>sdmc:/AndroidHorizonNX/apks/</code>, tags each APK by native ABI, shows the list, and on launch hands off to the right engine via <code>envSetNextLoad(path, argv)</code>, passing the package name as <code>argv[1]</code>. No ELF loader, JNI shim, or game-engine code of its own.</p>
             </div>
             <div class="card">
-              <h3><a href="https://github.com/Viridite/VNX-Translation-Core">AHNX-Translation-Core</a></h3>
-              <p>Builds <code>AHNX-Translation-Core-x64.nro</code> — the real engine: ELF loading, JIT, the JNI/Bionic compat layer, audio, sensors. Always expects a package name in <code>argv[1]</code>; not meant to run standalone. Also builds an <code>-x32</code> placeholder — 32-bit games aren't supported yet (no public AArch32 libnx toolchain).</p>
+              <h3><a href="https://github.com/Viridite/VNX-Translation-Core">VNX-Translation-Core</a></h3>
+              <p>Builds <code>Viridite-Translation-Core-x64.nro</code> — the real engine: ELF loading, JIT, the JNI/Bionic compat layer, audio, sensors. Always expects a package name in <code>argv[1]</code>; not meant to run standalone. Also builds an <code>-x32</code> placeholder — 32-bit games aren't supported yet (no public AArch32 libnx toolchain).</p>
             </div>
           </div>
           <p style="margin-top:var(--sp-5)">Why split it this way: a Switch process runs in one execution state (AArch64 or AArch32) for its whole lifetime, so the picker and a hypothetical future 32-bit engine can't be one process. Splitting the picker from the engine means adding a real 32-bit engine later is "point the launcher at a new NRO," not "rewrite everything." Splitting them into separate <em>repos</em> keeps the launcher (small, stable) decoupled from the engine (where almost all development happens) — "the app won't launch" and "the game crashes" issues land in the right place.</p>

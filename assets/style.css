@@ -266,17 +266,40 @@ nav.site a.cta:hover { background: var(--accent-hover); color: var(--accent-ink)
 
 main { padding: var(--sp-2) 0 var(--sp-20); }
 
-.hero { text-align: center; padding: var(--sp-12) 0 var(--sp-2); }
+.hero { text-align: center; padding: var(--sp-16) 0 var(--sp-4); position: relative; }
 .hero.compact { padding: var(--sp-8) 0 var(--sp-2); }
 
+/* Soft jade aura behind the hero — reads as light off the gemstone. */
+.hero::before {
+  content: "";
+  position: absolute;
+  left: 50%; top: -30px;
+  transform: translateX(-50%);
+  width: 620px; height: 400px; max-width: 92vw;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--accent) 20%, transparent), transparent 72%);
+  filter: blur(24px);
+  z-index: -1;
+  pointer-events: none;
+}
+.hero.compact::before { display: none; }
+
 .hero img.logo-lg {
-  width: 84px; height: 84px;
+  width: 96px; height: 96px;
   border-radius: var(--radius-lg);
   margin-bottom: var(--sp-5);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-lg), 0 0 48px color-mix(in srgb, var(--accent) 42%, transparent);
 }
 
-.hero h1 span { color: var(--accent); }
+.hero h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); }
+/* Jade gradient wordmark for the accented phrase. */
+.hero h1 span {
+  color: var(--accent);
+  background: linear-gradient(135deg, #6cf0bf, var(--accent) 55%, #0f8a54);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 
 .hero p.tagline {
   font-size: var(--fs-lg);
