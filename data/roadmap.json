@@ -87,10 +87,10 @@
       "body": "Cross-check the submitted APK's SHA-256 (already captured) against the one the attached logs were actually generated from, so a report can't silently drift from a different APK build than the one tested."
     },
     {
-      "title": "Compat-report metadata: Android Horizon build + Switch firmware + Atmosphere version",
+      "title": "Compat-report metadata: Verdite build + Switch firmware + Atmosphere version",
       "status": "Todo",
       "team": "Website Team",
-      "body": "Log which Android Horizon build ran each session, plus the Switch firmware and Atmosphere versions where available. Reports submitted before this existed should render as N/A/Unknown, backfilled with the latest build available at the time of that submission rather than guessed blindly."
+      "body": "Log which Verdite build ran each session, plus the Switch firmware and Atmosphere versions where available. Reports submitted before this existed should render as N/A/Unknown, backfilled with the latest build available at the time of that submission rather than guessed blindly."
     },
     {
       "title": "Compatibility list UI overhaul",

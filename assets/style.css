@@ -1,5 +1,10 @@
+/* Outfit — a geometric humanist sans under the SIL Open Font License (free
+   for any use), used as a clean, license-safe stand-in for Google Sans /
+   Product Sans (which are proprietary). Served from Google Fonts (OFL). */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
+
 /* ═══════════════════════════════════════════════════════════════════════
-   Android Horizon — design system v2
+   Verdite — design system v2
 
    Rebuilt from scratch. Two real reference points instead of vibes:
 
@@ -28,9 +33,9 @@
   --text:        #0f1419;
   --text-dim:    #536471;
   --text-mute:   #8b98a5;
-  --border:      #e7e9ec;
-  --accent:      #168f4f;
-  --accent-hover:#127a43;
+  --border:      #e6ebe8;
+  --accent:      #0c9463;
+  --accent-hover:#0a7d54;
   --accent-ink:  #ffffff;
   --warn:        #a15c00;
   --warn-bg:     #fff3e0;
@@ -64,24 +69,25 @@
   --sp-12: 48px; --sp-16: 64px; --sp-20: 80px;
 
   --max-w: 1120px;
-  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-sans: "Outfit", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
-/* ---- Dark palette — the logo's real night-sky navy, not generic black ---- */
+/* ---- Dark palette — "inside a green gemstone": deep teal-green darks with a
+   jade accent, fitting the name (Verdite is a green mineral), not navy. ---- */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg:        #0e0d30;
-    --bg-alt:    #121047;
-    --surface:   #1a1768;
-    --surface-2: #211d80;
-    --text:      #e9edf1;
-    --text-dim:  #a8aed6;
-    --text-mute: #7d82b0;
-    --border:    #433d9e;
-    --accent:    #34e186;
-    --accent-hover:#5ce89d;
-    --accent-ink:#04140c;
+    --bg:        #06140f;
+    --bg-alt:    #0a1e16;
+    --surface:   #0f2a20;
+    --surface-2: #14352a;
+    --text:      #e6f1ea;
+    --text-dim:  #9db8ab;
+    --text-mute: #6d8a7c;
+    --border:    #245043;
+    --accent:    #35e0a2;
+    --accent-hover:#5fecba;
+    --accent-ink:#03130d;
     --warn:      #f0b94d;
     --warn-bg:   rgba(240, 185, 77, 0.14);
     --danger:    #ff6b7f;
