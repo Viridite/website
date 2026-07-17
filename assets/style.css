@@ -418,6 +418,8 @@ th { color: var(--text-mute); font-size: var(--fs-xs); text-transform: uppercase
 .search-input:focus, .sort-select:focus { outline: 2px solid color-mix(in srgb, var(--accent) 50%, transparent); outline-offset: 1px; }
 
 .tabs { display: inline-flex; gap: 4px; background: var(--surface-2); border-radius: var(--radius-pill); padding: 4px; }
+.compat-showfail { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-sm); color: var(--text-dim); cursor: pointer; user-select: none; }
+.compat-showfail input { accent-color: var(--accent); cursor: pointer; }
 .tab {
   font: inherit; font-weight: 700; font-size: var(--fs-sm);
   padding: 8px 16px; border: none; border-radius: var(--radius-pill);

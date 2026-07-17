@@ -53,8 +53,8 @@
       <div id="community-reports-controls" class="compat-controls" style="display:none">
         <input type="search" id="compat-search" class="search-input" placeholder="Search games, packages, publishers…" aria-label="Search compatibility list">
         <select id="compat-sort" class="sort-select" aria-label="Sort compatibility list">
+          <option value="status" selected>Sort: Best status first</option>
           <option value="name">Sort: Name (A–Z)</option>
-          <option value="status">Sort: Best status first</option>
           <option value="recent">Sort: Recently updated</option>
         </select>
         <div class="tabs" role="tablist" aria-label="Filter by architecture">
@@ -62,6 +62,9 @@
           <button type="button" class="tab" data-arch="x64" role="tab" aria-selected="false">64-bit</button>
           <button type="button" class="tab" data-arch="x32" role="tab" aria-selected="false">32-bit</button>
         </div>
+        <label class="compat-showfail">
+          <input type="checkbox" id="compat-showfail"> Show not-working
+        </label>
       </div>
 
       <div id="community-reports-table" class="table-wrap" style="display:none">
@@ -150,6 +153,7 @@
   var noResults = document.getElementById("community-reports-noresults");
   var searchInput = document.getElementById("compat-search");
   var sortSelect = document.getElementById("compat-sort");
+  var showFail = document.getElementById("compat-showfail");
   var tabs = controls ? controls.querySelectorAll(".tab") : [];
 
   // Seed list for the family-friendly blur — there's no free/reliable API
@@ -245,8 +249,20 @@
     return tr;
   }
 
-  fetch(RAW_BASE + "data/games.json?v=" + Date.now())
-    .then(function (r) { if (!r.ok) throw new Error("fetch failed"); return r.json(); })
+  // Compatibility data is JSON. Prefer the live pipeline output so newly
+  // submitted reports show up immediately; fall back to the copy committed in
+  // this site (data/games.json, same-origin) if the live fetch is unavailable,
+  // so the list still renders.
+  function loadCompatJson() {
+    return fetch(RAW_BASE + "data/games.json?v=" + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error("live fetch failed"); return r.json(); })
+      .catch(function () {
+        return fetch("data/games.json?v=" + Date.now())
+          .then(function (r) { if (!r.ok) throw new Error("local fetch failed"); return r.json(); });
+      });
+  }
+
+  loadCompatJson()
     .then(function (games) {
       loading.style.display = "none";
       if (!games || games.length === 0) {
@@ -276,9 +292,15 @@
         var sortMode = sortSelect.value;
         var activeArch = controls.querySelector(".tab.active").getAttribute("data-arch");
 
+        // Not-working games (verdict "fail") are hidden unless the user opts in —
+        // the list leads with what actually plays. A search query overrides the
+        // hide so people can always find a specific game they're looking up.
+        var includeFail = (showFail && showFail.checked) || !!q;
+
         var filtered = groups.map(function (g) {
           var arch = g.primary.arch || "x64";
           if (activeArch !== "all" && arch !== activeArch) return null;
+          if (!includeFail && g.primary.verdict === "fail") return null;
           if (!q) return { group: g, score: 0 };
           var score = fuzzyScore(g.primary.game_name + " " + g.pkg + " " + publisherLabel(g.publisher), q);
           return score === -1 ? null : { group: g, score: score };
@@ -341,6 +363,7 @@
 
       searchInput.addEventListener("input", render);
       sortSelect.addEventListener("change", render);
+      if (showFail) showFail.addEventListener("change", render);
       tabs.forEach(function (t) {
         t.addEventListener("click", function () {
           tabs.forEach(function (o) { o.classList.remove("active"); o.setAttribute("aria-selected", "false"); });

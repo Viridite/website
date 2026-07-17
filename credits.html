@@ -65,6 +65,20 @@
     border: 1px solid var(--border);
     margin-bottom: 8px;
   }
+  .credit-avatar-fallback {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.4rem;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #0a7d43));
+  }
   .credit-person span {
     font-size: 0.82rem;
     color: var(--text-dim);
@@ -169,6 +183,21 @@
     return "https://github.com/" + encodeURIComponent(login) + ".png?size=64";
   }
 
+  // Automated accounts (github-actions[bot], dependabot[bot], …) show up in the
+  // contributors API but have no user page, so their avatar 404s. Drop them —
+  // they aren't people to credit anyway.
+  function isBot(login) {
+    return /\[bot\]$/i.test(login) || login === "github-actions";
+  }
+
+  // A tinted initial, used when an avatar image fails to load for any reason.
+  function fallbackAvatar(img, login) {
+    var c = document.createElement("span");
+    c.className = "credit-avatar-fallback";
+    c.textContent = (login[0] || "?").toUpperCase();
+    if (img.parentNode) img.parentNode.replaceChild(c, img);
+  }
+
   function personEl(login) {
     var wrap = document.createElement("a");
     wrap.className = "credit-person";
@@ -180,6 +209,7 @@
     img.src = avatarUrl(login);
     img.alt = login;
     img.loading = "lazy";
+    img.onerror = function () { fallbackAvatar(img, login); };
 
     var span = document.createElement("span");
     span.textContent = login;
@@ -206,7 +236,7 @@
     return fetch("https://api.github.com/repos/Viridite/" + r.repo + "/contributors?per_page=100")
       .then(function (resp) { return resp.ok ? resp.json() : []; })
       .then(function (list) {
-        return { title: r.title, logins: (list || []).map(function (c) { return c.login; }) };
+        return { title: r.title, logins: (list || []).map(function (c) { return c.login; }).filter(function (l) { return l && !isBot(l); }) };
       })
       .catch(function () { return { title: r.title, logins: [] }; });
   });
@@ -216,7 +246,7 @@
     .then(function (games) {
       var seen = {}, logins = [];
       (games || []).forEach(function (g) {
-        if (g.submitted_by && !seen[g.submitted_by]) {
+        if (g.submitted_by && !seen[g.submitted_by] && !isBot(g.submitted_by)) {
           seen[g.submitted_by] = true;
           logins.push(g.submitted_by);
         }
