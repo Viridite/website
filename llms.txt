@@ -1,4 +1,4 @@
-# Verdite
+# Viridite
 
 > A compatibility/translation layer that runs Android NDK games natively on Nintendo Switch's Horizon OS — no Android OS, no emulator, no VM. The game's real ARM64 machine code runs directly on the Switch's Tegra X1; a shim layer (custom ELF loader, JIT, Bionic/JNI compat, audio, sensors) fakes just enough of the Android runtime that the game doesn't notice it isn't on Android. Comparable in spirit to Wine, not to an emulator.
 

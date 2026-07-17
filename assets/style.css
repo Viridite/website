@@ -4,7 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap');
 
 /* ═══════════════════════════════════════════════════════════════════════
-   Verdite — design system v2
+   Viridite — design system v2
 
    Rebuilt from scratch. Two real reference points instead of vibes:
 
@@ -74,7 +74,7 @@
 }
 
 /* ---- Dark palette — "inside a green gemstone": deep teal-green darks with a
-   jade accent, fitting the name (Verdite is a green mineral), not navy. ---- */
+   jade accent, fitting the name (Viridite is a green mineral), not navy. ---- */
 @media (prefers-color-scheme: dark) {
   :root {
     --bg:        #06140f;

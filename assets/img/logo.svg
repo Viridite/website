@@ -1,17 +1,17 @@
-<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Verdite">
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Viridite">
   <defs>
-    <linearGradient id="verdite-g" x1="12" y1="8" x2="52" y2="58" gradientUnits="userSpaceOnUse">
+    <linearGradient id="viridite-g" x1="12" y1="8" x2="52" y2="58" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#5ce89d"/>
       <stop offset=".5" stop-color="#34e186"/>
       <stop offset="1" stop-color="#0f7a43"/>
     </linearGradient>
   </defs>
   <!-- Cut gem: a crown band over a pavilion that points down, reading as the
-       "V" of Verdite. Verdite is a green mineral, so a faceted green stone. -->
+       "V" of Viridite. Viridite is a green mineral, so a faceted green stone. -->
   <!-- crown (top band) -->
-  <path d="M11 16 H53 L47 27 H17 Z" fill="url(#verdite-g)"/>
+  <path d="M11 16 H53 L47 27 H17 Z" fill="url(#viridite-g)"/>
   <!-- pavilion (points down) -->
-  <path d="M17 27 H47 L32 57 Z" fill="url(#verdite-g)"/>
+  <path d="M17 27 H47 L32 57 Z" fill="url(#viridite-g)"/>
   <!-- top highlight -->
   <path d="M11 16 H53 L50 21 H14 Z" fill="#ffffff" opacity=".20"/>
   <!-- facet lines -->

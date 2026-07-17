@@ -1,20 +1,20 @@
-<title>Verdite — Android games, natively on Switch</title>
+<title>Viridite — Android games, natively on Switch</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="A compatibility/translation layer that runs Android NDK games directly on Nintendo Switch's Horizon OS — no Android OS, no emulator.">
-<meta property="og:title" content="Verdite">
+<meta property="og:title" content="Viridite">
 <meta property="og:description" content="Run Android NDK games natively on Nintendo Switch's Horizon OS — no Android OS, no emulator, no VM.">
 <meta property="og:image" content="https://androidhorizon.aaronworld.uk/assets/img/screenshots/ui_menu.png">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://androidhorizon.aaronworld.uk/">
 <link rel="icon" href="assets/img/logo.svg">
-<link rel="stylesheet" href="assets/style.css?v=4">
+<link rel="stylesheet" href="assets/style.css?v=5">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "Verdite",
+  "name": "Viridite",
   "applicationCategory": "Emulator",
   "operatingSystem": "Nintendo Switch (Horizon OS)",
   "description": "A compatibility/translation layer that runs Android NDK games natively on Nintendo Switch's Horizon OS — no Android OS, no emulator, no VM.",
@@ -28,7 +28,7 @@
 <header class="site">
   <div class="wrap bar">
     <img class="logo" src="assets/img/logo.svg" alt="">
-    <span class="brand">Verd<span>ite</span></span>
+    <span class="brand">Virid<span>ite</span></span>
     <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
@@ -48,7 +48,7 @@
   <div class="wrap">
 
     <div class="hero">
-      <img class="logo-lg" src="assets/img/logo.svg" alt="Verdite logo">
+      <img class="logo-lg" src="assets/img/logo.svg" alt="Viridite logo">
       <h1>Android games, running on <span>Nintendo Switch</span> — for real</h1>
       <p class="tagline">Not an emulator. No Android OS underneath. The game's actual ARM64 code runs directly on the Switch's own chip, with a compatibility shim standing in for everything Android normally provides.</p>
       <div class="btn-row">
@@ -63,7 +63,7 @@
 
     <section>
       <h2>What this actually is</h2>
-      <p>It's Wine, basically, except the "Windows app" is an Android game and the "Linux" is a game console. There's no emulation happening and no hidden Android install — the game's native <code>.so</code> library gets loaded and run directly on the Switch's Tegra X1, the same ARM chip that's in a lot of Android phones. What Verdite actually provides is a shim underneath it: enough of libc, JNI, OpenGL ES, and asset/file handling that the game never notices it isn't talking to a real Android device.</p>
+      <p>It's Wine, basically, except the "Windows app" is an Android game and the "Linux" is a game console. There's no emulation happening and no hidden Android install — the game's native <code>.so</code> library gets loaded and run directly on the Switch's Tegra X1, the same ARM chip that's in a lot of Android phones. What Viridite actually provides is a shim underneath it: enough of libc, JNI, OpenGL ES, and asset/file handling that the game never notices it isn't talking to a real Android device.</p>
       <p>Because of that, what runs and what doesn't comes down to what the shim happens to implement, not how "big" or "small" a game is in the abstract. Right now that means older, simple 2D games with an <code>arm64-v8a</code> build, OpenGL ES rendering, no Play Services dependency, and saves that stay on-device. Hill Climb Racing is the one game that's actually been pushed through this end-to-end — see below for exactly what that took.</p>
       <div class="card">
         <h3>What's confirmed working, on real hardware</h3>

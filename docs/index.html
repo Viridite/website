@@ -1,18 +1,18 @@
-<title>Docs — Verdite</title>
+<title>Docs — Viridite</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Setup, controls, building, and architecture docs for Verdite.">
-<meta property="og:title" content="Verdite — Docs">
-<meta property="og:description" content="Setup, controls, building, and architecture docs for Verdite.">
+<meta name="description" content="Setup, controls, building, and architecture docs for Viridite.">
+<meta property="og:title" content="Viridite — Docs">
+<meta property="og:description" content="Setup, controls, building, and architecture docs for Viridite.">
 <meta property="og:type" content="website">
 <link rel="canonical" href="https://androidhorizon.aaronworld.uk/docs/index.html">
 <link rel="icon" href="../assets/img/logo.svg">
-<link rel="stylesheet" href="../assets/style.css?v=4">
+<link rel="stylesheet" href="../assets/style.css?v=5">
 
 <header class="site">
   <div class="wrap bar">
     <img class="logo" src="../assets/img/logo.svg" alt="">
-    <span class="brand">Verd<span>ite</span></span>
+    <span class="brand">Virid<span>ite</span></span>
     <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
@@ -65,7 +65,7 @@
         <section id="controls">
           <h2>Controls</h2>
           <div class="callout warn">
-            <strong>Handheld mode only.</strong> Android games use touch screen input. The Switch touchscreen only works in handheld mode — in docked mode there is no touch input, so games will be uncontrollable. Verdite detects docked mode and shows a warning in the footer.
+            <strong>Handheld mode only.</strong> Android games use touch screen input. The Switch touchscreen only works in handheld mode — in docked mode there is no touch input, so games will be uncontrollable. Viridite detects docked mode and shows a warning in the footer.
           </div>
           <div class="table-wrap">
             <table>
@@ -85,7 +85,7 @@
 
         <section id="architecture">
           <h2>Architecture — launcher + Translation Core</h2>
-          <p>Verdite is split into two pieces, in two separate repos, that chain-load into each other rather than being one monolithic binary:</p>
+          <p>Viridite is split into two pieces, in two separate repos, that chain-load into each other rather than being one monolithic binary:</p>
           <div class="repo-links">
             <div class="card">
               <h3><a href="https://github.com/AndroidHorizon/AndroidHorizonNX">AndroidHorizonNX</a></h3>
@@ -102,7 +102,7 @@
         <section id="building">
           <h2>Building from source</h2>
           <p>Requires <a href="https://devkitpro.org/">devkitPro</a> with <code>devkitA64</code> and <code>libnx</code> installed.</p>
-          <p>Verdite is split across two repositories as well as two NRO binaries — clone both as siblings to build everything and get a drag-to-SD-card layout:</p>
+          <p>Viridite is split across two repositories as well as two NRO binaries — clone both as siblings to build everything and get a drag-to-SD-card layout:</p>
           <pre><code>export DEVKITPRO=/opt/devkitpro
 git clone https://github.com/AndroidHorizon/AndroidHorizonNX.git
 git clone https://github.com/AndroidHorizon/AHNX-Translation-Core.git
@@ -119,8 +119,8 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
 
         <section id="forwarders">
           <h2>Forwarders — a dedicated home-menu icon per game</h2>
-          <p>Verdite can boot straight into one specific game, skipping the app-list picker entirely — the same idea as a RetroArch forwarder that jumps straight into a ROM+core instead of RetroArch's own content browser.</p>
-          <p>Pass the game's package name (e.g. <code>com.fingersoft.hillclimb</code>) as the first argument when launching <code>AndroidHorizonNX.nro</code>. This uses libnx's standard <code>envSetNextLoad(path, argv)</code> chain-load mechanism — the same one homebrew forwarders (RetroArch included) use. If the requested package isn't installed, Verdite falls back to the normal app-list picker with an on-screen notice.</p>
+          <p>Viridite can boot straight into one specific game, skipping the app-list picker entirely — the same idea as a RetroArch forwarder that jumps straight into a ROM+core instead of RetroArch's own content browser.</p>
+          <p>Pass the game's package name (e.g. <code>com.fingersoft.hillclimb</code>) as the first argument when launching <code>AndroidHorizonNX.nro</code>. This uses libnx's standard <code>envSetNextLoad(path, argv)</code> chain-load mechanism — the same one homebrew forwarders (RetroArch included) use. If the requested package isn't installed, Viridite falls back to the normal app-list picker with an on-screen notice.</p>
         </section>
 
         <section id="submitting-reports">
