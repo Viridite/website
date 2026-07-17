@@ -22,8 +22,8 @@
       <a href="roadmap.html">Roadmap</a>
       <a href="credits.html">Credits</a>
       <a href="docs/index.html">Docs</a>
-      <a href="https://github.com/AndroidHorizon">GitHub</a>
-      <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
+      <a href="https://github.com/Viridite">GitHub</a>
+      <a class="cta" href="https://github.com/Viridite/Viridite/releases">Download</a>
     </nav>
   </div>
 </header>
@@ -36,7 +36,7 @@
       <p class="tagline">Every row below came from someone actually running the game on hardware — nothing here is guessed.</p>
       <div class="btn-row">
         <a class="btn primary" href="submit.html">Submit a compatibility report</a>
-        <a class="btn secondary" href="https://github.com/AndroidHorizon/compat-reports">Browse raw logs</a>
+        <a class="btn secondary" href="https://github.com/Viridite/compat-reports">Browse raw logs</a>
       </div>
     </div>
 
@@ -102,8 +102,8 @@
   <div class="wrap">
     Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
     <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
-    <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
-    <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite/Viridite/blob/main/LICENSE">License</a>
   </div>
 </footer>
 
@@ -141,7 +141,7 @@
 
 <script>
 (function () {
-  var RAW_BASE = "https://raw.githubusercontent.com/AndroidHorizon/compat-reports/main/";
+  var RAW_BASE = "https://raw.githubusercontent.com/Viridite/compat-reports/main/";
   var loading = document.getElementById("community-reports-loading");
   var empty = document.getElementById("community-reports-empty");
   var controls = document.getElementById("community-reports-controls");
@@ -232,7 +232,7 @@
     statusTd.innerHTML = '<span class="' + pillClass(entry.verdict) + '">' + entry.verdict_label + "</span>";
 
     var detailsTd = document.createElement("td");
-    var reportUrl = "https://github.com/AndroidHorizon/compat-reports/blob/main/" + entry.report_path;
+    var reportUrl = "https://github.com/Viridite/compat-reports/blob/main/" + entry.report_path;
     var submitter = entry.submitted_by ? ("@" + entry.submitted_by + " from " + entry.source_site) : ("from " + entry.source_site);
     detailsTd.innerHTML = entry.summary + ' — <a href="' + reportUrl + '">full report + logs</a>' +
       ' <span style="color:var(--text-mute)">(submitted ' + submitter + ")</span>";

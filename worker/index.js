@@ -22,12 +22,12 @@
 //                            know or care whether a link was pasted or a
 //                            file was uploaded, it just downloads a URL
 //                            either way — then fires a repository_dispatch
-//                            on AndroidHorizonNX to kick off analysis.
+//                            on the Viridite launcher repo to kick off analysis.
 
 const ALLOWED_ORIGIN = "https://androidhorizon.aaronworld.uk";
-const OWNER = "AndroidHorizon";
+const OWNER = "Viridite";
 const REPORTS_REPO = "compat-reports";
-const LAUNCHER_REPO = "AndroidHorizonNX";
+const LAUNCHER_REPO = "Viridite";
 const R2_BUCKET = "android-horizon-compat-uploads";
 const R2_REGION = "auto";
 const R2_SERVICE = "s3";

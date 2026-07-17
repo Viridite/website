@@ -91,8 +91,8 @@
       <a href="roadmap.html">Roadmap</a>
       <a href="credits.html" class="active">Credits</a>
       <a href="docs/index.html">Docs</a>
-      <a href="https://github.com/AndroidHorizon">GitHub</a>
-      <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
+      <a href="https://github.com/Viridite">GitHub</a>
+      <a class="cta" href="https://github.com/Viridite/Viridite/releases">Download</a>
     </nav>
   </div>
 </header>
@@ -121,8 +121,8 @@
   <div class="wrap">
     Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
     <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
-    <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
-    <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite/Viridite/blob/main/LICENSE">License</a>
   </div>
 </footer>
 
@@ -159,8 +159,8 @@
 
 (function () {
   var CODE_REPOS = [
-    { repo: "AndroidHorizonNX", title: "Launcher (AndroidHorizonNX)" },
-    { repo: "AHNX-Translation-Core", title: "Translation Core" },
+    { repo: "Viridite", title: "Launcher (Viridite)" },
+    { repo: "VNX-Translation-Core", title: "Translation Core" },
     { repo: "website", title: "Website" },
     { repo: "compat-reports", title: "Compat-reports infra" },
   ];
@@ -203,7 +203,7 @@
   }
 
   var codeContributors = CODE_REPOS.map(function (r) {
-    return fetch("https://api.github.com/repos/AndroidHorizon/" + r.repo + "/contributors?per_page=100")
+    return fetch("https://api.github.com/repos/Viridite/" + r.repo + "/contributors?per_page=100")
       .then(function (resp) { return resp.ok ? resp.json() : []; })
       .then(function (list) {
         return { title: r.title, logins: (list || []).map(function (c) { return c.login; }) };
@@ -211,7 +211,7 @@
       .catch(function () { return { title: r.title, logins: [] }; });
   });
 
-  var testers = fetch("https://raw.githubusercontent.com/AndroidHorizon/compat-reports/main/data/games.json?v=" + Date.now())
+  var testers = fetch("https://raw.githubusercontent.com/Viridite/compat-reports/main/data/games.json?v=" + Date.now())
     .then(function (r) { return r.ok ? r.json() : []; })
     .then(function (games) {
       var seen = {}, logins = [];

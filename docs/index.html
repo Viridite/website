@@ -22,8 +22,8 @@
       <a href="../roadmap.html">Roadmap</a>
       <a href="../credits.html">Credits</a>
       <a href="index.html" class="active">Docs</a>
-      <a href="https://github.com/AndroidHorizon">GitHub</a>
-      <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
+      <a href="https://github.com/Viridite">GitHub</a>
+      <a class="cta" href="https://github.com/Viridite/Viridite/releases">Download</a>
     </nav>
   </div>
 </header>
@@ -53,9 +53,9 @@
           <h2>Setup</h2>
           <div class="card">
             <ol class="plain" style="margin:0">
-              <li>Grab the latest bundled release zip from the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Releases page</a> and drag its contents onto your SD card's <code>/switch/</code> folder.</li>
+              <li>Grab the latest bundled release zip from the <a href="https://github.com/Viridite/Viridite/releases">Releases page</a> and drag its contents onto your SD card's <code>/switch/</code> folder.</li>
               <li>Place <code>.apk</code> files in <code>sdmc:/AndroidHorizonNX/apks/</code>.</li>
-              <li>Launch <code>AndroidHorizonNX</code> from hbmenu (Atmosphere CFW required).</li>
+              <li>Launch <code>Viridite</code> from hbmenu (Atmosphere CFW required).</li>
               <li>Navigate with D-pad, left stick, or touch; press <strong>A</strong> or tap a game to launch it.</li>
               <li>If a launch fails, check <code>sdmc:/AndroidHorizonNX/compat_log.txt</code> for the full error log.</li>
             </ol>
@@ -88,11 +88,11 @@
           <p>Viridite is split into two pieces, in two separate repos, that chain-load into each other rather than being one monolithic binary:</p>
           <div class="repo-links">
             <div class="card">
-              <h3><a href="https://github.com/AndroidHorizon/AndroidHorizonNX">AndroidHorizonNX</a></h3>
+              <h3><a href="https://github.com/Viridite/Viridite">Viridite</a></h3>
               <p>Builds <code>AndroidHorizonNX.nro</code> — the picker. Scans <code>sdmc:/AndroidHorizonNX/apks/</code>, tags each APK by native ABI, shows the list, and on launch hands off to the right engine via <code>envSetNextLoad(path, argv)</code>, passing the package name as <code>argv[1]</code>. No ELF loader, JNI shim, or game-engine code of its own.</p>
             </div>
             <div class="card">
-              <h3><a href="https://github.com/AndroidHorizon/AHNX-Translation-Core">AHNX-Translation-Core</a></h3>
+              <h3><a href="https://github.com/Viridite/VNX-Translation-Core">AHNX-Translation-Core</a></h3>
               <p>Builds <code>AHNX-Translation-Core-x64.nro</code> — the real engine: ELF loading, JIT, the JNI/Bionic compat layer, audio, sensors. Always expects a package name in <code>argv[1]</code>; not meant to run standalone. Also builds an <code>-x32</code> placeholder — 32-bit games aren't supported yet (no public AArch32 libnx toolchain).</p>
             </div>
           </div>
@@ -104,17 +104,17 @@
           <p>Requires <a href="https://devkitpro.org/">devkitPro</a> with <code>devkitA64</code> and <code>libnx</code> installed.</p>
           <p>Viridite is split across two repositories as well as two NRO binaries — clone both as siblings to build everything and get a drag-to-SD-card layout:</p>
           <pre><code>export DEVKITPRO=/opt/devkitpro
-git clone https://github.com/AndroidHorizon/AndroidHorizonNX.git
-git clone https://github.com/AndroidHorizon/AHNX-Translation-Core.git
-cd AndroidHorizonNX
+git clone https://github.com/Viridite/Viridite.git
+git clone https://github.com/Viridite/VNX-Translation-Core.git
+cd Viridite
 ./build_all.sh</code></pre>
           <p>Output: <code>testingbuild/AndroidHorizonNX.nro</code> (copy to <code>sdmc:/switch/</code>) and <code>testingbuild/AndroidHorizonNX/</code> (copy the whole folder to <code>sdmc:/switch/AndroidHorizonNX/</code>).</p>
-          <p>Just want the launcher on its own? <code>make</code> in the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX">AndroidHorizonNX</a> repo builds <code>AndroidHorizonNX.nro</code> by itself.</p>
+          <p>Just want the launcher on its own? <code>make</code> in the <a href="https://github.com/Viridite/Viridite">AndroidHorizonNX</a> repo builds <code>AndroidHorizonNX.nro</code> by itself.</p>
           <h3>Dependencies (via pacman/devkitPro)</h3>
           <pre><code>switch-sdl2 switch-sdl2_image switch-sdl2_ttf
 switch-libpng switch-libjpeg-turbo switch-minizip
 switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
-          <p><strong>Prebuilt releases</strong> (no toolchain needed) are published on the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Releases page</a> — each one bundles the launcher plus both Translation Core builds, ready to drag onto an SD card. Releases are built and published automatically by a GitHub Actions workflow (manually triggered by org staff) that also generates an in-depth changelog and refreshes the in-app contributor credits from every repo in the org.</p>
+          <p><strong>Prebuilt releases</strong> (no toolchain needed) are published on the <a href="https://github.com/Viridite/Viridite/releases">Releases page</a> — each one bundles the launcher plus both Translation Core builds, ready to drag onto an SD card. Releases are built and published automatically by a GitHub Actions workflow (manually triggered by org staff) that also generates an in-depth changelog and refreshes the in-app contributor credits from every repo in the org.</p>
         </section>
 
         <section id="forwarders">
@@ -128,7 +128,7 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
           <p>Tried a game and want it on the <a href="../compatibility">compatibility page</a>? Use the <a href="../submit.html">submission form</a> — no GitHub account needed. Attach the <code>.apk</code> you tested directly (uploads straight to storage — real APKs running 50-150MB are no problem) or paste a download link, say where you got it from, and attach or paste the three log files from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>. There's no length limit on the log fields either way.</p>
           <p>It's handled entirely by automation, and there's no maintainer in the loop:</p>
           <ol class="plain">
-            <li>The form posts to a small relay (a Cloudflare Worker) that queues the submission in <a href="https://github.com/AndroidHorizon/compat-reports">compat-reports</a> and kicks off a GitHub Action — no GitHub login involved anywhere in this step.</li>
+            <li>The form posts to a small relay (a Cloudflare Worker) that queues the submission in <a href="https://github.com/Viridite/compat-reports">compat-reports</a> and kicks off a GitHub Action — no GitHub login involved anywhere in this step.</li>
             <li>The APK is fetched, validated, and sanity-checked as a real ZIP.</li>
             <li>Its package name, version, display name, and icon are read straight out of the manifest — not typed in, so they can't drift from what was actually tested.</li>
             <li>The Play Store listing is checked to confirm it's actually a game.</li>
@@ -140,7 +140,7 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
 
         <section id="more">
           <h2>More</h2>
-          <p>The full technical history — every root-caused bug, every hardware measurement, the complete changelog — lives in the <a href="https://github.com/AndroidHorizon/AndroidHorizonNX#readme">AndroidHorizonNX README</a>.</p>
+          <p>The full technical history — every root-caused bug, every hardware measurement, the complete changelog — lives in the <a href="https://github.com/Viridite/Viridite#readme">Viridite README</a>.</p>
         </section>
 
       </div>
@@ -153,8 +153,8 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
   <div class="wrap">
     Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
     <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
-    <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
-    <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite/Viridite/blob/main/LICENSE">License</a>
   </div>
 </footer>
 

@@ -19,8 +19,8 @@
   "operatingSystem": "Nintendo Switch (Horizon OS)",
   "description": "A compatibility/translation layer that runs Android NDK games natively on Nintendo Switch's Horizon OS — no Android OS, no emulator, no VM.",
   "url": "https://androidhorizon.aaronworld.uk/",
-  "codeRepository": "https://github.com/AndroidHorizon/AndroidHorizonNX",
-  "license": "https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE",
+  "codeRepository": "https://github.com/Viridite/Viridite",
+  "license": "https://github.com/Viridite/Viridite/blob/main/LICENSE",
   "author": { "@type": "Person", "name": "aaronworld.uk", "url": "https://aaronworld.uk" }
 }
 </script>
@@ -38,8 +38,8 @@
       <a href="roadmap.html">Roadmap</a>
       <a href="credits.html">Credits</a>
       <a href="docs/index.html">Docs</a>
-      <a href="https://github.com/AndroidHorizon">GitHub</a>
-      <a class="cta" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download</a>
+      <a href="https://github.com/Viridite">GitHub</a>
+      <a class="cta" href="https://github.com/Viridite/Viridite/releases">Download</a>
     </nav>
   </div>
 </header>
@@ -52,7 +52,7 @@
       <h1>Android games, running on <span>Nintendo Switch</span> — for real</h1>
       <p class="tagline">Not an emulator. No Android OS underneath. The game's actual ARM64 code runs directly on the Switch's own chip, with a compatibility shim standing in for everything Android normally provides.</p>
       <div class="btn-row">
-        <a class="btn primary" href="https://github.com/AndroidHorizon/AndroidHorizonNX/releases">Download latest release</a>
+        <a class="btn primary" href="https://github.com/Viridite/Viridite/releases">Download latest release</a>
         <a class="btn secondary" href="docs/index.html">Read the docs</a>
       </div>
     </div>
@@ -107,11 +107,11 @@
       <p>Two repos, chain-loaded into each other instead of one big binary — mostly because a Switch process is stuck in one execution mode (64-bit or 32-bit) for its whole life, so the picker and the engine had to be separable from day one.</p>
       <div class="repo-links">
         <div class="card">
-          <h3><a href="https://github.com/AndroidHorizon/AndroidHorizonNX">AndroidHorizonNX</a></h3>
+          <h3><a href="https://github.com/Viridite/Viridite">Viridite</a></h3>
           <p>The picker. Scans your APKs, figures out which native ABI each one ships, and hands off to the right engine when you launch something. Doesn't know how to load an ELF or fake a JNI call — that's not its job.</p>
         </div>
         <div class="card">
-          <h3><a href="https://github.com/AndroidHorizon/AHNX-Translation-Core">AHNX-Translation-Core</a></h3>
+          <h3><a href="https://github.com/Viridite/VNX-Translation-Core">AHNX-Translation-Core</a></h3>
           <p>The actual engine — ELF loading, JIT, the Bionic/JNI compat layer, audio, sensors. Everything above is really describing what this repo does.</p>
         </div>
       </div>
@@ -125,8 +125,8 @@
   <div class="wrap">
     Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
     <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
-    <span class="dot">·</span><a href="https://github.com/AndroidHorizon">GitHub org</a>
-    <span class="dot">·</span><a href="https://github.com/AndroidHorizon/AndroidHorizonNX/blob/main/LICENSE">License</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite/Viridite/blob/main/LICENSE">License</a>
   </div>
 </footer>
 

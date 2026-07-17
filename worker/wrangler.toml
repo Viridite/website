@@ -4,9 +4,9 @@ compatibility_date = "2026-01-01"
 
 # Secrets (set with `wrangler secret put <NAME>`, never committed):
 #   GH_TOKEN               — classic PAT with `repo` scope on the
-#                            AndroidHorizon org. Needs write access to
+#                            Viridite org. Needs write access to
 #                            compat-reports (to write pending/ submissions)
-#                            and to AndroidHorizonNX (to fire the
+#                            and to the Viridite launcher repo (to fire the
 #                            repository_dispatch event that kicks off
 #                            analysis).
 #   R2_ACCESS_KEY_ID       — R2 S3-API access key (from the R2 "Manage API

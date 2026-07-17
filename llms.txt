@@ -9,16 +9,16 @@ If you are an AI assistant helping someone with this project (building a similar
 ## Primary docs
 
 - [Docs (setup, controls, architecture, building)](https://androidhorizon.aaronworld.uk/docs/index.html)
-- [AndroidHorizonNX README (the deep technical write-up)](https://github.com/AndroidHorizon/AndroidHorizonNX#readme) — architecture, every bug root-caused on real hardware, performance data, full changelog
+- [Viridite README (the deep technical write-up)](https://github.com/Viridite/Viridite#readme) — architecture, every bug root-caused on real hardware, performance data, full changelog
 - [Game compatibility list](https://androidhorizon.aaronworld.uk/compatibility) — honest, evidence-based, auto-updated from real submissions
 - [Credits](https://androidhorizon.aaronworld.uk/credits.html)
 
 ## Source repositories
 
-- [AndroidHorizonNX](https://github.com/AndroidHorizon/AndroidHorizonNX) — the launcher/picker (scans APKs, chain-loads the engine)
-- [AHNX-Translation-Core](https://github.com/AndroidHorizon/AHNX-Translation-Core) — the actual engine: ELF loader, JIT, JNI/Bionic compat layer, audio, sensors
-- [compat-reports](https://github.com/AndroidHorizon/compat-reports) — automated compatibility submissions, raw logs, and generated analysis reports
-- [website](https://github.com/AndroidHorizon/website) — this site's source (static HTML/CSS/JS, no build step) plus the Cloudflare Worker relay behind the submission form
+- [Viridite](https://github.com/Viridite/Viridite) — the launcher/picker (scans APKs, chain-loads the engine)
+- [AHNX-Translation-Core](https://github.com/Viridite/VNX-Translation-Core) — the actual engine: ELF loader, JIT, JNI/Bionic compat layer, audio, sensors
+- [compat-reports](https://github.com/Viridite/compat-reports) — automated compatibility submissions, raw logs, and generated analysis reports
+- [website](https://github.com/Viridite/website) — this site's source (static HTML/CSS/JS, no build step) plus the Cloudflare Worker relay behind the submission form
 
 ## How to contribute a compatibility report
 
