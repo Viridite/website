@@ -1,0 +1,9 @@
+# The Cloudflare Worker (compat-submission relay) is a separate backend that
+# stays deployed on Cloudflare via wrangler — it is NOT part of the static
+# site Vercel serves. Keep its source in the repo but don't publish it.
+worker/
+
+# Repo housekeeping that shouldn't be served as site content.
+README.md
+LICENSE
+.github/
