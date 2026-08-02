@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Download — Viridite</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Download the latest Viridite build for Nintendo Switch — the SD-card bundle with the launcher and both Translation Core binaries.">
+<meta property="og:title" content="Viridite — Download">
+<meta property="og:description" content="Download the latest Viridite SD-card bundle.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://viridite.aaronworld.uk/download">
+<link rel="icon" href="assets/img/logo.svg">
+<link rel="stylesheet" href="assets/style.css?v=9">
+</head>
+
+<body>
+<header class="site">
+  <div class="wrap bar">
+    <img class="logo" src="assets/img/logo.svg" alt="">
+    <span class="brand">Virid<span>ite</span></span>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-controls="nav-menu" aria-label="Toggle navigation" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <nav class="site" id="nav-menu" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="compatibility">Compatibility</a>
+      <a href="roadmap">Roadmap</a>
+      <a href="credits">Credits</a>
+      <a href="docs">Docs</a>
+      <a href="https://github.com/Viridite">GitHub</a>
+      <a class="cta" href="download">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="hero compact">
+      <h1 style="font-size:var(--fs-3xl)">Download</h1>
+      <p class="tagline" id="dl-status">Finding the latest build…</p>
+    </div>
+
+    <section>
+      <div class="card">
+        <p style="margin-top:0"><a class="btn primary" id="dl-btn" href="https://github.com/Viridite/Viridite/releases">Download latest release</a></p>
+        <p id="dl-detail" style="margin-bottom:0;color:var(--text-mute);font-size:var(--fs-sm)">
+          Your download should start on its own. If it doesn't, use the button above.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>What you get</h2>
+      <p><code>Viridite-sdcard.zip</code> contains the launcher and both Translation Core binaries, already arranged the way they need to sit on your SD card:</p>
+      <pre><code>Viridite.nro                                 -&gt; sdmc:/switch/
+Viridite/Viridite-Translation-Core-x64.nro   -&gt; sdmc:/switch/Viridite/
+Viridite/Viridite-Translation-Core-x32.nro</code></pre>
+      <p>Drag the contents of the zip onto your SD card's <code>/switch/</code> folder, put <code>.apk</code> files in <code>sdmc:/Viridite/apks/</code>, and launch Viridite from hbmenu. Full steps are in the <a href="docs">docs</a>.</p>
+      <p style="margin-bottom:0">Already running Viridite? It checks for updates itself on startup and can install them without going through this page.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
+    <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
+    <span class="dot">·</span><a href="https://github.com/Viridite">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite/Viridite/blob/main/LICENSE">License</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var toggle = document.getElementById("nav-toggle");
+  var menu = document.getElementById("nav-menu");
+  if (!toggle || !menu) return;
+  toggle.addEventListener("click", function () {
+    var open = menu.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  menu.querySelectorAll("a").forEach(function (a) {
+    a.addEventListener("click", function () {
+      menu.classList.remove("open");
+      toggle.setAttribute("aria-expanded", "false");
+    });
+  });
+})();
+</script>
+
+<script src="assets/latest-release.js"></script>
+<script>
+(function () {
+  var ONLINE_THRESHOLD = 25;
+  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (data) {
+      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
+        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
+      }
+    })
+    .catch(function () {});
+})();
+
+// This page exists so there's one stable URL — /download — that always lands on
+// the newest build. GitHub's own shortcut for that
+// (/releases/latest/download/<asset>) can't be used here: every Viridite release
+// is published as a prerelease and "latest" ignores prereleases, so it 404s. The
+// tag has to be resolved at request time instead.
+viriditeLatestRelease().then(function (rel) {
+  var status = document.getElementById("dl-status");
+  var btn    = document.getElementById("dl-btn");
+  var detail = document.getElementById("dl-detail");
+
+  if (!rel || !rel.assetUrl) {
+    status.textContent = "Couldn't reach GitHub just now.";
+    detail.textContent = "Use the button to open the releases page and grab Viridite-sdcard.zip manually.";
+    return;
+  }
+
+  status.textContent = "Latest build: " + rel.tag;
+  btn.href = rel.assetUrl;
+  btn.textContent = "Download " + rel.tag;
+  detail.textContent = rel.size
+    ? "Viridite-sdcard.zip — " + (rel.size / (1024 * 1024)).toFixed(1) + " MB. Starting automatically…"
+    : "Viridite-sdcard.zip — starting automatically…";
+
+  // Kick the download off without navigating away, so the instructions below
+  // stay on screen while it runs.
+  var a = document.createElement("a");
+  a.href = rel.assetUrl;
+  a.download = "";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  detail.textContent = detail.textContent.replace("Starting automatically…", "Download started.")
+                                         .replace("starting automatically…", "download started.");
+});
+</script>
+</body>
+</html>
