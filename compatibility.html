@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <title>Game Compatibility — Viridite</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,20 +11,22 @@
 <link rel="canonical" href="https://viridite.aaronworld.uk/compatibility">
 <link rel="icon" href="assets/img/logo.svg">
 <link rel="stylesheet" href="assets/style.css?v=9">
+</head>
 
+<body>
 <header class="site">
   <div class="wrap bar">
     <img class="logo" src="assets/img/logo.svg" alt="">
     <span class="brand">Virid<span>ite</span></span>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-controls="nav-menu" aria-label="Toggle navigation" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
-    <nav class="site" id="nav-menu">
-      <a href="index.html">Home</a>
+    <nav class="site" id="nav-menu" aria-label="Main">
+      <a href="/">Home</a>
       <a href="compatibility" class="active">Compatibility</a>
-      <a href="roadmap.html">Roadmap</a>
-      <a href="credits.html">Credits</a>
-      <a href="docs/index.html">Docs</a>
+      <a href="roadmap">Roadmap</a>
+      <a href="credits">Credits</a>
+      <a href="docs">Docs</a>
       <a href="https://github.com/Viridite">GitHub</a>
       <a class="cta" href="https://github.com/Viridite/Viridite/tags">Download</a>
     </nav>
@@ -35,19 +40,19 @@
       <h1 style="font-size:var(--fs-3xl)">Game Compatibility</h1>
       <p class="tagline">Every row below came from someone actually running the game on hardware — nothing here is guessed.</p>
       <div class="btn-row">
-        <a class="btn primary" href="submit.html">Submit a compatibility report</a>
+        <a class="btn primary" href="submit">Submit a compatibility report</a>
         <a class="btn secondary" href="https://github.com/Viridite/compat-reports">Browse raw logs</a>
       </div>
     </div>
 
     <div class="callout warn">
-      This project is young and most games haven't been tried yet. Don't see the game you're after? That usually just means nobody's tested it — grab the APK, run it through Viridite, and <a href="submit.html">submit what you find</a>. Package name, version, and icon are read straight out of the APK itself, so results can't drift from what you actually ran.
+      This project is young and most games haven't been tried yet. Don't see the game you're after? That usually just means nobody's tested it — grab the APK, run it through Viridite, and <a href="submit">submit what you find</a>. Package name, version, and icon are read straight out of the APK itself, so results can't drift from what you actually ran.
     </div>
 
     <section id="community-reports">
       <div id="community-reports-loading" style="color:var(--text-mute)">Loading reports…</div>
       <div id="community-reports-empty" class="card" style="display:none">
-        <p style="margin:0">Nothing submitted yet — this list fills in as people test games and <a href="submit.html">report back</a>. Be the first.</p>
+        <p style="margin:0">Nothing submitted yet — this list fills in as people test games and <a href="submit">report back</a>. Be the first.</p>
       </div>
 
       <div id="community-reports-controls" class="compat-controls" style="display:none">
@@ -381,3 +386,5 @@
     });
 })();
 </script>
+</body>
+</html>

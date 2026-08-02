@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <title>Viridite — Android games, natively on Switch</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,20 +27,22 @@
   "author": { "@type": "Person", "name": "aaronworld.uk", "url": "https://aaronworld.uk" }
 }
 </script>
+</head>
 
+<body>
 <header class="site">
   <div class="wrap bar">
     <img class="logo" src="assets/img/logo.svg" alt="">
     <span class="brand">Virid<span>ite</span></span>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-controls="nav-menu" aria-label="Toggle navigation" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
-    <nav class="site" id="nav-menu">
-      <a href="index.html" class="active">Home</a>
+    <nav class="site" id="nav-menu" aria-label="Main">
+      <a href="/" class="active">Home</a>
       <a href="compatibility">Compatibility</a>
-      <a href="roadmap.html">Roadmap</a>
-      <a href="credits.html">Credits</a>
-      <a href="docs/index.html">Docs</a>
+      <a href="roadmap">Roadmap</a>
+      <a href="credits">Credits</a>
+      <a href="docs">Docs</a>
       <a href="https://github.com/Viridite">GitHub</a>
       <a class="cta" href="https://github.com/Viridite/Viridite/tags">Download</a>
     </nav>
@@ -53,7 +58,7 @@
       <p class="tagline">Not an emulator. No Android OS underneath. The game's actual ARM64 code runs directly on the Switch's own chip, with a compatibility shim standing in for everything Android normally provides.</p>
       <div class="btn-row">
         <a class="btn primary" href="https://github.com/Viridite/Viridite/tags">Download latest release</a>
-        <a class="btn secondary" href="docs/index.html">Read the docs</a>
+        <a class="btn secondary" href="docs">Read the docs</a>
       </div>
     </div>
 
@@ -76,27 +81,27 @@
       <p>Every screenshot below came off the Switch itself — the launcher saves a copy of each UI screen, and the game loop grabs the actual framebuffer at a few milestone frames. Nothing here is a mockup.</p>
       <div class="shots">
         <figure>
-          <div class="frame"><img src="assets/img/screenshots/ui_menu.png" alt="APK browser"></div>
+          <div class="frame"><img src="assets/img/screenshots/ui_menu.png" alt="APK browser" loading="lazy" decoding="async"></div>
           <figcaption>The launcher's APK browser</figcaption>
         </figure>
         <figure>
-          <div class="frame"><img src="assets/img/screenshots/ui_loading.png" alt="Loading screen"></div>
+          <div class="frame"><img src="assets/img/screenshots/ui_loading.png" alt="Loading screen" loading="lazy" decoding="async"></div>
           <figcaption>Live loading screen with real-time compat log</figcaption>
         </figure>
         <figure>
-          <div class="frame"><img src="assets/img/screenshots/ui_result.png" alt="Result screen"></div>
+          <div class="frame"><img src="assets/img/screenshots/ui_result.png" alt="Result screen" loading="lazy" decoding="async"></div>
           <figcaption>Launch result screen</figcaption>
         </figure>
         <figure>
-          <div class="frame"><img src="assets/img/screenshots/game_frame30.png" alt="Game splash frame"></div>
+          <div class="frame"><img src="assets/img/screenshots/game_frame30.png" alt="Game splash frame" loading="lazy" decoding="async"></div>
           <figcaption>Fingersoft splash — frame 30</figcaption>
         </figure>
         <figure>
-          <div class="frame"><img src="assets/img/screenshots/game_frame300.png" alt="Game frame 300"></div>
+          <div class="frame"><img src="assets/img/screenshots/game_frame300.png" alt="Game frame 300" loading="lazy" decoding="async"></div>
           <figcaption>In-game — frame 300</figcaption>
         </figure>
         <figure>
-          <div class="frame"><img src="assets/img/screenshots/game_frame900.png" alt="Game frame 900"></div>
+          <div class="frame"><img src="assets/img/screenshots/game_frame900.png" alt="Game frame 900" loading="lazy" decoding="async"></div>
           <figcaption>In-game — frame 900</figcaption>
         </figure>
       </div>
@@ -115,7 +120,7 @@
           <p>The actual engine — ELF loading, JIT, the Bionic/JNI compat layer, audio, sensors. Everything above is really describing what this repo does.</p>
         </div>
       </div>
-      <p style="margin-top:var(--sp-5)">The full write-up — build steps, the changelog, every bug that got root-caused along the way — is in <a href="docs/index.html">the docs</a>.</p>
+      <p style="margin-top:var(--sp-5)">The full write-up — build steps, the changelog, every bug that got root-caused along the way — is in <a href="docs">the docs</a>.</p>
     </section>
 
   </div>
@@ -161,3 +166,5 @@
     .catch(function () {});
 })();
 </script>
+</body>
+</html>

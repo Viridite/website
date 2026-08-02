@@ -1,24 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <title>Submit a compatibility report — Viridite</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Submit a game compatibility report for Viridite.">
-<link rel="canonical" href="https://viridite.aaronworld.uk/submit.html">
+<link rel="canonical" href="https://viridite.aaronworld.uk/submit">
 <link rel="icon" href="assets/img/logo.svg">
 <link rel="stylesheet" href="assets/style.css?v=9">
+</head>
 
+<body>
 <header class="site">
   <div class="wrap bar">
     <img class="logo" src="assets/img/logo.svg" alt="">
     <span class="brand">Virid<span>ite</span></span>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-controls="nav-menu" aria-label="Toggle navigation" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
-    <nav class="site" id="nav-menu">
-      <a href="index.html">Home</a>
+    <nav class="site" id="nav-menu" aria-label="Main">
+      <a href="/">Home</a>
       <a href="compatibility">Compatibility</a>
-      <a href="roadmap.html">Roadmap</a>
-      <a href="credits.html">Credits</a>
-      <a href="docs/index.html">Docs</a>
+      <a href="roadmap">Roadmap</a>
+      <a href="credits">Credits</a>
+      <a href="docs">Docs</a>
       <a href="https://github.com/Viridite">GitHub</a>
       <a class="cta" href="https://github.com/Viridite/Viridite/tags">Download</a>
     </nav>
@@ -54,7 +59,7 @@
 
       <div class="field">
         <label for="github_username">Your GitHub username (optional)</label>
-        <p class="hint">Only used to credit you on the <a href="credits.html">Credits page</a> and in-app About screen, under Testers. Leave blank to stay anonymous — not verified, just for display.</p>
+        <p class="hint">Only used to credit you on the <a href="credits">Credits page</a> and in-app About screen, under Testers. Leave blank to stay anonymous — not verified, just for display.</p>
         <input type="text" id="github_username" name="github_username" placeholder="octocat">
       </div>
 
@@ -296,3 +301,5 @@
   });
 })();
 </script>
+</body>
+</html>

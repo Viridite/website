@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- URLs here must be the clean-URL form (see cleanUrls in vercel.json).
+     Listing the .html spelling makes every crawl hit a 308 first and splits
+     the canonical signal across two URLs for the same page. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://viridite.aaronworld.uk/</loc>
@@ -11,17 +14,22 @@
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://viridite.aaronworld.uk/docs/index.html</loc>
+    <loc>https://viridite.aaronworld.uk/docs</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://viridite.aaronworld.uk/submit.html</loc>
+    <loc>https://viridite.aaronworld.uk/submit</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://viridite.aaronworld.uk/credits.html</loc>
+    <loc>https://viridite.aaronworld.uk/roadmap</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://viridite.aaronworld.uk/credits</loc>
     <changefreq>weekly</changefreq>
     <priority>0.5</priority>
   </url>

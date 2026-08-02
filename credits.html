@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 <title>Credits — Viridite</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -5,7 +8,7 @@
 <meta property="og:title" content="Viridite — Credits">
 <meta property="og:description" content="Everyone who's contributed code, testing, or reports to Viridite.">
 <meta property="og:type" content="website">
-<link rel="canonical" href="https://viridite.aaronworld.uk/credits.html">
+<link rel="canonical" href="https://viridite.aaronworld.uk/credits">
 <link rel="icon" href="assets/img/logo.svg">
 <link rel="stylesheet" href="assets/style.css?v=9">
 
@@ -91,20 +94,22 @@
     margin-top: 12px;
   }
 </style>
+</head>
 
+<body>
 <header class="site">
   <div class="wrap bar">
     <img class="logo" src="assets/img/logo.svg" alt="">
     <span class="brand">Virid<span>ite</span></span>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-controls="nav-menu" aria-label="Toggle navigation" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
-    <nav class="site" id="nav-menu">
-      <a href="index.html">Home</a>
+    <nav class="site" id="nav-menu" aria-label="Main">
+      <a href="/">Home</a>
       <a href="compatibility">Compatibility</a>
-      <a href="roadmap.html">Roadmap</a>
-      <a href="credits.html" class="active">Credits</a>
-      <a href="docs/index.html">Docs</a>
+      <a href="roadmap">Roadmap</a>
+      <a href="credits" class="active">Credits</a>
+      <a href="docs">Docs</a>
       <a href="https://github.com/Viridite">GitHub</a>
       <a class="cta" href="https://github.com/Viridite/Viridite/tags">Download</a>
     </nav>
@@ -294,3 +299,5 @@
   });
 })();
 </script>
+</body>
+</html>
