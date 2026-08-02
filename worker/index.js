@@ -24,7 +24,26 @@
 //                            either way — then fires a repository_dispatch
 //                            on the Viridite launcher repo to kick off analysis.
 
-const ALLOWED_ORIGIN = "https://androidhorizon.aaronworld.uk";
+// The site's own origin(s). This is an allowlist rather than a single
+// constant because the project has already been renamed once: the old
+// androidhorizon host stopped resolving while this still named it, so the
+// Worker answered every real submission with an Access-Control-Allow-Origin
+// the browser refused to match, and the form failed for everyone. Echoing
+// back whichever allowed origin actually made the request means the next
+// rename only needs a name added here, and old/new hosts both keep working
+// during the cutover instead of one silently breaking.
+const ALLOWED_ORIGINS = [
+  "https://viridite.aaronworld.uk",
+  "https://androidhorizon.aaronworld.uk",
+];
+const DEFAULT_ORIGIN = ALLOWED_ORIGINS[0];
+
+// Unknown origins get the canonical host back (not a wildcard, and not the
+// caller's own value) — the browser then blocks them, which is the intent.
+function pickOrigin(request) {
+  const origin = request.headers.get("Origin");
+  return ALLOWED_ORIGINS.includes(origin) ? origin : DEFAULT_ORIGIN;
+}
 const OWNER = "Viridite";
 const REPORTS_REPO = "compat-reports";
 const LAUNCHER_REPO = "Viridite";
@@ -41,11 +60,16 @@ const MAX_FIELD_BYTES = 4096;               // apk_url / source_site / username 
 // limit like the old GitHub-Contents-API-based upload had.
 const MAX_APK_UPLOAD_BYTES = 300 * 1024 * 1024;
 
-function corsHeaders() {
+// Callers deep inside the handlers have no request in scope, so they emit the
+// canonical origin here and fetch() below restamps the negotiated one.
+function corsHeaders(origin = DEFAULT_ORIGIN) {
   return {
-    "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
+    "Access-Control-Allow-Origin": origin,
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
+    // Responses vary by request origin — without this a shared cache could
+    // serve one allowed origin's ACAO header to the other.
+    Vary: "Origin",
   };
 }
 
@@ -304,19 +328,31 @@ async function handleSubmit(request, env) {
   return json(200, { ok: true, id });
 }
 
+async function route(request, env) {
+  if (request.method === "OPTIONS") {
+    return new Response(null, { headers: corsHeaders() });
+  }
+  if (request.method !== "POST") {
+    return json(405, { ok: false, error: "POST only" });
+  }
+
+  const { pathname } = new URL(request.url);
+  if (pathname === "/apk-upload-url") {
+    return handleUploadUrl(request, env);
+  }
+  return handleSubmit(request, env);
+}
+
 export default {
   async fetch(request, env) {
-    if (request.method === "OPTIONS") {
-      return new Response(null, { headers: corsHeaders() });
-    }
-    if (request.method !== "POST") {
-      return json(405, { ok: false, error: "POST only" });
-    }
-
-    const { pathname } = new URL(request.url);
-    if (pathname === "/apk-upload-url") {
-      return handleUploadUrl(request, env);
-    }
-    return handleSubmit(request, env);
+    const res = await route(request, env);
+    // Single place where the negotiated origin lands, so every response —
+    // preflight, success, and the error paths alike — carries a header the
+    // calling page will actually accept. An error the browser hides behind a
+    // CORS failure is indistinguishable from the relay being down.
+    const out = new Response(res.body, res);
+    out.headers.set("Access-Control-Allow-Origin", pickOrigin(request));
+    out.headers.set("Vary", "Origin");
+    return out;
   },
 };

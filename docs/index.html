@@ -54,10 +54,10 @@
           <div class="card">
             <ol class="plain" style="margin:0">
               <li>Grab the latest bundled release zip from the <a href="https://github.com/Viridite/Viridite/releases">Releases page</a> and drag its contents onto your SD card's <code>/switch/</code> folder.</li>
-              <li>Place <code>.apk</code> files in <code>sdmc:/AndroidHorizonNX/apks/</code>.</li>
+              <li>Place <code>.apk</code> files in <code>sdmc:/Viridite/apks/</code>.</li>
               <li>Launch <code>Viridite</code> from hbmenu (Atmosphere CFW required).</li>
               <li>Navigate with D-pad, left stick, or touch; press <strong>A</strong> or tap a game to launch it.</li>
-              <li>If a launch fails, check <code>sdmc:/AndroidHorizonNX/compat_log.txt</code> for the full error log.</li>
+              <li>If a launch fails, check <code>sdmc:/Viridite/compat_log.txt</code> for the full error log.</li>
             </ol>
           </div>
         </section>
@@ -89,7 +89,7 @@
           <div class="repo-links">
             <div class="card">
               <h3><a href="https://github.com/Viridite/Viridite">Viridite</a></h3>
-              <p>Builds <code>AndroidHorizonNX.nro</code> — the picker. Scans <code>sdmc:/AndroidHorizonNX/apks/</code>, tags each APK by native ABI, shows the list, and on launch hands off to the right engine via <code>envSetNextLoad(path, argv)</code>, passing the package name as <code>argv[1]</code>. No ELF loader, JNI shim, or game-engine code of its own.</p>
+              <p>Builds <code>Viridite.nro</code> — the picker. Scans <code>sdmc:/Viridite/apks/</code>, tags each APK by native ABI, shows the list, and on launch hands off to the right engine via <code>envSetNextLoad(path, argv)</code>, passing the package name as <code>argv[1]</code>. No ELF loader, JNI shim, or game-engine code of its own.</p>
             </div>
             <div class="card">
               <h3><a href="https://github.com/Viridite/VNX-Translation-Core">VNX-Translation-Core</a></h3>
@@ -108,8 +108,8 @@ git clone https://github.com/Viridite/Viridite.git
 git clone https://github.com/Viridite/VNX-Translation-Core.git
 cd Viridite
 ./build_all.sh</code></pre>
-          <p>Output: <code>testingbuild/AndroidHorizonNX.nro</code> (copy to <code>sdmc:/switch/</code>) and <code>testingbuild/AndroidHorizonNX/</code> (copy the whole folder to <code>sdmc:/switch/AndroidHorizonNX/</code>).</p>
-          <p>Just want the launcher on its own? <code>make</code> in the <a href="https://github.com/Viridite/Viridite">AndroidHorizonNX</a> repo builds <code>AndroidHorizonNX.nro</code> by itself.</p>
+          <p>Output: <code>testingbuild/Viridite.nro</code> (copy to <code>sdmc:/switch/</code>) and <code>testingbuild/Viridite/</code> (copy the whole folder to <code>sdmc:/switch/Viridite/</code>).</p>
+          <p>Just want the launcher on its own? <code>make</code> in the <a href="https://github.com/Viridite/Viridite">Viridite</a> repo builds <code>Viridite.nro</code> by itself.</p>
           <h3>Dependencies (via pacman/devkitPro)</h3>
           <pre><code>switch-sdl2 switch-sdl2_image switch-sdl2_ttf
 switch-libpng switch-libjpeg-turbo switch-minizip
@@ -120,12 +120,12 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
         <section id="forwarders">
           <h2>Forwarders — a dedicated home-menu icon per game</h2>
           <p>Viridite can boot straight into one specific game, skipping the app-list picker entirely — the same idea as a RetroArch forwarder that jumps straight into a ROM+core instead of RetroArch's own content browser.</p>
-          <p>Pass the game's package name (e.g. <code>com.fingersoft.hillclimb</code>) as the first argument when launching <code>AndroidHorizonNX.nro</code>. This uses libnx's standard <code>envSetNextLoad(path, argv)</code> chain-load mechanism — the same one homebrew forwarders (RetroArch included) use. If the requested package isn't installed, Viridite falls back to the normal app-list picker with an on-screen notice.</p>
+          <p>Pass the game's package name (e.g. <code>com.fingersoft.hillclimb</code>) as the first argument when launching <code>Viridite.nro</code>. This uses libnx's standard <code>envSetNextLoad(path, argv)</code> chain-load mechanism — the same one homebrew forwarders (RetroArch included) use. If the requested package isn't installed, Viridite falls back to the normal app-list picker with an on-screen notice.</p>
         </section>
 
         <section id="submitting-reports">
           <h2>Submitting a compatibility report</h2>
-          <p>Tried a game and want it on the <a href="../compatibility">compatibility page</a>? Use the <a href="../submit.html">submission form</a> — no GitHub account needed. Attach the <code>.apk</code> you tested directly (uploads straight to storage — real APKs running 50-150MB are no problem) or paste a download link, say where you got it from, and attach or paste the three log files from <code>sdmc:/AndroidHorizonNX/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>. There's no length limit on the log fields either way.</p>
+          <p>Tried a game and want it on the <a href="../compatibility">compatibility page</a>? Use the <a href="../submit.html">submission form</a> — no GitHub account needed. Attach the <code>.apk</code> you tested directly (uploads straight to storage — real APKs running 50-150MB are no problem) or paste a download link, say where you got it from, and attach or paste the three log files from <code>sdmc:/Viridite/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>. There's no length limit on the log fields either way.</p>
           <p>It's handled entirely by automation, and there's no maintainer in the loop:</p>
           <ol class="plain">
             <li>The form posts to a small relay (a Cloudflare Worker) that queues the submission in <a href="https://github.com/Viridite/compat-reports">compat-reports</a> and kicks off a GitHub Action — no GitHub login involved anywhere in this step.</li>
