@@ -13,17 +13,21 @@
 <link rel="stylesheet" href="assets/style.css?v=9">
 
 <style>
+  /* The reel grows with its content and only becomes a scrolling "rolling
+     credits" panel once there's actually more than fits. Previously this was a
+     fixed 60vh box, which read as broken while the project has a handful of
+     contributors — mostly empty, auto-scrolling nothing. */
   #reel-wrap {
     position: relative;
-    height: 60vh;
-    min-height: 380px;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--surface);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
   }
-  #reel-wrap::before, #reel-wrap::after {
+  #reel-wrap.is-scrolling { height: 60vh; min-height: 380px; }
+  /* Fade masks only make sense when content runs past the edges. */
+  #reel-wrap.is-scrolling::before, #reel-wrap.is-scrolling::after {
     content: "";
     position: absolute;
     left: 0; right: 0;
@@ -31,67 +35,100 @@
     pointer-events: none;
     z-index: 2;
   }
-  #reel-wrap::before { top: 0; background: linear-gradient(var(--surface), transparent); }
-  #reel-wrap::after  { bottom: 0; background: linear-gradient(transparent, var(--surface)); }
-  #reel {
+  #reel-wrap.is-scrolling::before { top: 0; background: linear-gradient(var(--surface), transparent); }
+  #reel-wrap.is-scrolling::after  { bottom: 0; background: linear-gradient(transparent, var(--surface)); }
+  #reel { padding: var(--sp-6) var(--sp-5); }
+  #reel-wrap.is-scrolling #reel {
     position: absolute;
     inset: 0;
     overflow-y: auto;
-    padding: 32px 28px;
     scrollbar-width: thin;
   }
-  .credit-category { margin-bottom: 36px; }
-  .credit-category:last-child { margin-bottom: 12px; }
-  .credit-category h3 {
+
+  .credit-group { margin-bottom: var(--sp-8); }
+  .credit-group:last-child { margin-bottom: 0; }
+  .credit-group > h3 {
     text-align: center;
     color: var(--accent);
     letter-spacing: 0.02em;
-    margin: 0 0 18px;
+    margin: 0 0 var(--sp-2);
   }
-  .credit-people {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 20px;
-  }
-  .credit-person {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 92px;
-    text-align: center;
-  }
-  .credit-person img {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    margin-bottom: 8px;
-  }
-  .credit-avatar-fallback {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1.4rem;
-    color: #fff;
-    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #0a7d43));
-  }
-  .credit-person span {
-    font-size: 0.82rem;
-    color: var(--text-dim);
-    word-break: break-word;
-  }
-  .credit-hint {
+  .credit-group > .credit-note {
     text-align: center;
     color: var(--text-mute);
-    font-size: 0.85rem;
-    margin-top: 12px;
+    font-size: var(--fs-xs);
+    margin: 0 0 var(--sp-5);
+  }
+
+  /* One card per PERSON, not per repo — someone who worked on four repos used
+     to render as four separate identical entries. */
+  .credit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: var(--sp-4);
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .credit-card {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    padding: var(--sp-4);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--bg-alt);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }
+  a.credit-card:hover {
+    text-decoration: none;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  }
+  .credit-card img, .credit-avatar-fallback {
+    width: 52px; height: 52px;
+    flex: 0 0 52px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+  }
+  .credit-avatar-fallback {
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.3rem;
+    color: var(--accent-ink);
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #0a7d43));
+  }
+  .credit-body { min-width: 0; }
+  .credit-name {
+    display: block;
+    font-weight: 700;
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .credit-meta {
+    display: block;
+    font-size: var(--fs-xs);
+    color: var(--text-mute);
+    margin-top: 1px;
+  }
+  .credit-roles {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-top: 6px;
+  }
+
+  .credit-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: var(--sp-3);
+    margin-top: var(--sp-3);
+  }
+  .credit-hint { color: var(--text-mute); font-size: var(--fs-sm); margin: 0; }
+  #reel-pause { display: none; }
+  #reel-wrap.is-scrolling ~ .credit-toolbar #reel-pause { display: inline-flex; }
+
+  @media (max-width: 560px) {
+    .credit-grid { grid-template-columns: 1fr; }
+    .credit-toolbar { flex-direction: column; align-items: flex-start; }
   }
 </style>
 </head>
@@ -121,7 +158,7 @@
 
     <div class="hero compact">
       <h1 style="font-size:var(--fs-3xl)">Credits</h1>
-      <p class="tagline">Code, testing, reports — same list the launcher's own About screen shows, pulled live from GitHub.</p>
+      <p class="tagline">Everyone who's put code, hardware testing, or compatibility reports into Viridite — pulled live from GitHub, same list the launcher's own About screen shows.</p>
     </div>
 
     <section>
@@ -130,7 +167,17 @@
           <p style="text-align:center;color:var(--text-mute)">Loading credits…</p>
         </div>
       </div>
-      <p class="credit-hint">Scrolls on its own — hover or touch it to take over and scroll manually.</p>
+      <div class="credit-toolbar">
+        <p class="credit-hint" id="credit-hint"></p>
+        <button type="button" class="btn secondary" id="reel-pause" aria-pressed="false">Pause scrolling</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Written with Claude</h2>
+      <div class="card">
+        <p style="margin:0">Nearly all of Viridite's code was written by <a href="https://claude.com/claude-code">Claude</a>, Anthropic's AI, working against problems found on real hardware — the ELF loader, the JNI/Bionic shim, the audio backend, this website. A human sets direction, runs every build on an actual Switch, and decides what ships. That split is the project, not a footnote to it, so it belongs on this page rather than only in the README.</p>
+      </div>
     </section>
 
   </div>
@@ -177,124 +224,180 @@
 })();
 
 (function () {
-  var CODE_REPOS = [
-    { repo: "Viridite", title: "Launcher (Viridite)" },
-    { repo: "VNX-Translation-Core", title: "Translation Core" },
-    { repo: "website", title: "Website" },
-    { repo: "compat-reports", title: "Compat-reports infra" },
+  // Each source contributes a ROLE to a person, rather than its own section.
+  // The same person working across four repos is one human who did four
+  // things, not four separate credits.
+  var SOURCES = [
+    { repo: "Viridite",             role: "Launcher", cls: "team-cores" },
+    { repo: "VNX-Translation-Core", role: "Core",     cls: "team-cores" },
+    { repo: "website",              role: "Website",  cls: "team-website" },
+    { repo: "compat-reports",       role: "Infra",    cls: "team-other" },
   ];
+  var TESTER_ROLE = { role: "Testing", cls: "team-testing" };
 
-  function avatarUrl(login) {
-    return "https://github.com/" + encodeURIComponent(login) + ".png?size=64";
-  }
-
-  // Automated accounts (github-actions[bot], dependabot[bot], …) show up in the
-  // contributors API but have no user page, so their avatar 404s. Drop them —
-  // they aren't people to credit anyway.
+  // Automated accounts (github-actions[bot], dependabot[bot], …) appear in the
+  // contributors API but have no user page, so their avatar 404s. They aren't
+  // people to credit anyway.
   function isBot(login) {
     return /\[bot\]$/i.test(login) || login === "github-actions";
   }
 
-  // A tinted initial, used when an avatar image fails to load for any reason.
-  function fallbackAvatar(img, login) {
-    var c = document.createElement("span");
-    c.className = "credit-avatar-fallback";
-    c.textContent = (login[0] || "?").toUpperCase();
-    if (img.parentNode) img.parentNode.replaceChild(c, img);
+  var people = Object.create(null);
+  // GitHub logins are case-insensitive, and the tester name is a free-text
+  // field on the submission form (optional and unverified), so "Aaronateataco"
+  // typed there and "aaronateataco" from the API are one person and must not
+  // become two cards. Key on the lowercased login; let the contributors API,
+  // which returns the canonical spelling, decide how the name is displayed.
+  function record(login, role, cls, commits, authoritative) {
+    if (login == null) return;
+    login = String(login).trim();
+    if (!login || isBot(login)) return;
+    var key = login.toLowerCase();
+    var p = people[key] || (people[key] = {
+      login: login, authoritative: false, commits: 0, roles: [], seen: Object.create(null)
+    });
+    if (authoritative && !p.authoritative) { p.login = login; p.authoritative = true; }
+    p.commits += commits || 0;
+    if (!p.seen[role]) { p.seen[role] = true; p.roles.push({ role: role, cls: cls }); }
   }
 
-  function personEl(login) {
-    var wrap = document.createElement("a");
-    wrap.className = "credit-person";
-    wrap.href = "https://github.com/" + login;
-    wrap.target = "_blank";
-    wrap.rel = "noopener";
+  function el(tag, cls, text) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  function cardFor(p) {
+    var a = el("a", "credit-card");
+    a.href = "https://github.com/" + encodeURIComponent(p.login);
+    a.target = "_blank";
+    a.rel = "noopener";
 
     var img = document.createElement("img");
-    img.src = avatarUrl(login);
-    img.alt = login;
+    img.src = "https://github.com/" + encodeURIComponent(p.login) + ".png?size=104";
+    img.alt = "";
     img.loading = "lazy";
-    img.onerror = function () { fallbackAvatar(img, login); };
+    img.decoding = "async";
+    img.width = 52; img.height = 52;
+    img.onerror = function () {
+      var f = el("span", "credit-avatar-fallback", (p.login[0] || "?").toUpperCase());
+      f.setAttribute("aria-hidden", "true");
+      if (img.parentNode) img.parentNode.replaceChild(f, img);
+    };
+    a.appendChild(img);
 
-    var span = document.createElement("span");
-    span.textContent = login;
-
-    wrap.appendChild(img);
-    wrap.appendChild(span);
-    return wrap;
+    var body = el("div", "credit-body");
+    body.appendChild(el("span", "credit-name", p.login));
+    if (p.commits > 0) {
+      body.appendChild(el("span", "credit-meta", p.commits === 1 ? "1 commit" : p.commits.toLocaleString() + " commits"));
+    }
+    var roles = el("div", "credit-roles");
+    p.roles.forEach(function (r) { roles.appendChild(el("span", "pill team-pill " + r.cls, r.role)); });
+    body.appendChild(roles);
+    a.appendChild(body);
+    return a;
   }
 
-  function categoryEl(title, logins) {
-    var cat = document.createElement("div");
-    cat.className = "credit-category";
-    var h = document.createElement("h3");
-    h.textContent = title;
-    cat.appendChild(h);
-    var people = document.createElement("div");
-    people.className = "credit-people";
-    logins.forEach(function (login) { people.appendChild(personEl(login)); });
-    cat.appendChild(people);
-    return cat;
+  function fetchJson(url) {
+    return fetch(url).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
   }
 
-  var codeContributors = CODE_REPOS.map(function (r) {
-    return fetch("https://api.github.com/repos/Viridite/" + r.repo + "/contributors?per_page=100")
-      .then(function (resp) { return resp.ok ? resp.json() : []; })
+  var jobs = SOURCES.map(function (s) {
+    return fetchJson("https://api.github.com/repos/Viridite/" + s.repo + "/contributors?per_page=100")
       .then(function (list) {
-        return { title: r.title, logins: (list || []).map(function (c) { return c.login; }).filter(function (l) { return l && !isBot(l); }) };
-      })
-      .catch(function () { return { title: r.title, logins: [] }; });
+        if (!Array.isArray(list)) return false;
+        list.forEach(function (c) { record(c.login, s.role, s.cls, c.contributions, true); });
+        return true;
+      });
   });
 
-  var testers = fetch("https://raw.githubusercontent.com/Viridite/compat-reports/main/data/games.json?v=" + Date.now())
-    .then(function (r) { return r.ok ? r.json() : []; })
-    .then(function (games) {
-      var seen = {}, logins = [];
-      (games || []).forEach(function (g) {
-        if (g.submitted_by && !seen[g.submitted_by] && !isBot(g.submitted_by)) {
-          seen[g.submitted_by] = true;
-          logins.push(g.submitted_by);
-        }
-      });
-      return { title: "Testers", logins: logins };
-    })
-    .catch(function () { return { title: "Testers", logins: [] }; });
+  jobs.push(
+    fetchJson("https://raw.githubusercontent.com/Viridite/compat-reports/main/data/games.json?v=" + Date.now())
+      .then(function (games) {
+        if (!Array.isArray(games)) return false;
+        games.forEach(function (g) { record(g.submitted_by, TESTER_ROLE.role, TESTER_ROLE.cls, 0, false); });
+        return true;
+      })
+  );
 
-  Promise.all(codeContributors.concat([testers])).then(function (categories) {
+  Promise.all(jobs).then(function (results) {
     var reel = document.getElementById("reel");
-    reel.innerHTML = "";
-    var any = false;
-    categories.forEach(function (cat) {
-      if (cat.logins.length === 0) return;
-      any = true;
-      reel.appendChild(categoryEl(cat.title, cat.logins));
-    });
-    if (!any) {
-      reel.innerHTML = '<p style="text-align:center;color:var(--text-mute)">Couldn\'t load credits right now — try again shortly.</p>';
+    var wrap = document.getElementById("reel-wrap");
+    var hint = document.getElementById("credit-hint");
+    var list = Object.keys(people).map(function (k) { return people[k]; });
+
+    if (!list.length) {
+      // Distinguish "nobody yet" from "GitHub wouldn't answer" — the
+      // unauthenticated API allows 60 requests/hour per IP, so a visitor who
+      // reloads a few times can genuinely hit the ceiling.
+      var anyOk = results.some(Boolean);
+      reel.innerHTML = "";
+      reel.appendChild(el("p", null, anyOk
+        ? "No contributors to show yet."
+        : "Couldn't reach GitHub just now (its API rate-limits anonymous requests). Try again in a few minutes."));
+      reel.firstChild.style.textAlign = "center";
+      reel.firstChild.style.color = "var(--text-mute)";
       return;
     }
 
-    // Auto-scroll like rolling end credits; pause while the visitor is
-    // actively scrolling/touching it themselves, resume after they stop.
-    var paused = false, resumeTimer = null;
-    function pauseThenResume() {
+    // Most commits first; testers with no commits sort alphabetically after.
+    list.sort(function (a, b) {
+      if (b.commits !== a.commits) return b.commits - a.commits;
+      return a.login.toLowerCase().localeCompare(b.login.toLowerCase());
+    });
+
+    reel.innerHTML = "";
+    var group = el("div", "credit-group");
+    group.appendChild(el("h3", null, list.length === 1 ? "Contributor" : "Contributors"));
+    group.appendChild(el("p", "credit-note",
+      "Counted once each, with every area they've worked on."));
+    var grid = el("div", "credit-grid");
+    list.forEach(function (p) { grid.appendChild(cardFor(p)); });
+    group.appendChild(grid);
+    reel.appendChild(group);
+
+    hint.textContent = list.length === 1
+      ? "One person so far — want to be on this list? Contributions and test reports both count."
+      : list.length + " people. Contributions and test reports both count.";
+
+    // Only turn this into a rolling-credits reel once there's genuinely more
+    // than fits, and never for visitors who've asked for reduced motion.
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    wrap.classList.add("is-scrolling");
+    if (reel.scrollHeight <= reel.clientHeight + 4) {
+      wrap.classList.remove("is-scrolling");   // fits — leave it static
+      return;
+    }
+
+    var paused = false, resumeTimer = null, manuallyPaused = false;
+    function nudge() {
+      if (manuallyPaused) return;
       paused = true;
       clearTimeout(resumeTimer);
       resumeTimer = setTimeout(function () { paused = false; }, 4000);
     }
-    reel.addEventListener("wheel", pauseThenResume, { passive: true });
-    reel.addEventListener("touchstart", pauseThenResume, { passive: true });
-    reel.addEventListener("mouseenter", function () { paused = true; });
-    reel.addEventListener("mouseleave", function () { paused = false; });
+    reel.addEventListener("wheel", nudge, { passive: true });
+    reel.addEventListener("touchstart", nudge, { passive: true });
+    reel.addEventListener("mouseenter", function () { if (!manuallyPaused) paused = true; });
+    reel.addEventListener("mouseleave", function () { if (!manuallyPaused) paused = false; });
+
+    // WCAG 2.2.2: motion that runs longer than five seconds needs a way to
+    // stop it that doesn't depend on hovering — keyboard users can't hover.
+    var btn = document.getElementById("reel-pause");
+    btn.addEventListener("click", function () {
+      manuallyPaused = !manuallyPaused;
+      paused = manuallyPaused;
+      btn.setAttribute("aria-pressed", manuallyPaused ? "true" : "false");
+      btn.textContent = manuallyPaused ? "Resume scrolling" : "Pause scrolling";
+    });
 
     setInterval(function () {
       if (paused) return;
       var atBottom = reel.scrollTop + reel.clientHeight >= reel.scrollHeight - 1;
-      if (atBottom) {
-        reel.scrollTop = 0;
-      } else {
-        reel.scrollTop += 1;
-      }
+      reel.scrollTop = atBottom ? 0 : reel.scrollTop + 1;
     }, 40);
   });
 })();
