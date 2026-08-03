@@ -165,6 +165,74 @@
     </div>
 
     <section>
+  <h2>Groundwork</h2>
+  <p class="tagline">Viridite is not built from nothing. These are the projects,
+  specifications and reverse-engineering efforts it stands on &mdash; several of them are
+  the reason a given part works at all, and a few are the reason a bug got found.</p>
+
+  <h3>Prior art &mdash; the same idea, done before</h3>
+  <ul>
+    <li><strong>so_util</strong> &mdash; <a href="https://github.com/TheOfficialFloW">TheOfficialFloW</a>
+      (Andy Nguyen). The original ELF-loading technique this whole scene rests on, first
+      used to run Android games natively on PS&nbsp;Vita.</li>
+    <li><a href="https://github.com/Rinnegatamante">Rinnegatamante</a>, Bythos, frangarcj,
+      CBPS and the wider Vita homebrew scene &mdash; who extended it across 45+ Android-to-Vita
+      ports.</li>
+    <li><a href="https://github.com/fgsfdsfgs/max_nx">max_nx</a> &mdash; the direct Switch
+      precedent, running Max Payne Mobile's real Android binary natively. Two concrete
+      techniques came from reading it: a preflight check that the JIT syscalls exist before
+      attempting a load, and writing a distinctive poison address into unresolved imports so
+      reaching one crashes unmistakably instead of as an ordinary null dereference.</li>
+    <li><a href="https://github.com/NaGaa95/ffd_nx">ffd_nx</a> &mdash; confirmation the
+      approach generalises past a single game.</li>
+  </ul>
+
+  <h3>Switch platform</h3>
+  <ul>
+    <li><a href="https://switchbrew.org/">switchbrew wiki</a> &mdash; the reverse-engineered
+      documentation of Horizon OS. Syscall semantics, memory-type tables, NRO layout and the
+      application-record model behind forwarders all come from here.</li>
+    <li><a href="https://github.com/switchbrew/libnx">libnx</a> &mdash; beyond using it,
+      reading it settles questions. Disassembling its exception entry stub is how we learned
+      that <code>svcReturnFromException</code> runs <em>before</em> the user handler, which
+      ended an entire line of investigation into a loading hang.</li>
+    <li><a href="https://devkitpro.org/">devkitPro / devkitA64</a> &mdash; toolchain and
+      portlibs.</li>
+    <li><a href="https://github.com/Atmosphere-NX/Atmosphere">Atmosph&egrave;re</a> &mdash;
+      the CFW everything runs under, and the crash-report format used for post-mortems.</li>
+    <li><a href="https://github.com/WerWolv/libtesla">libtesla</a> and
+      <a href="https://github.com/WerWolv/nx-ovlloader">nx-ovlloader</a> &mdash; the overlay
+      runtime. Reading libtesla is how we found an overlay can reposition its own layer,
+      which is what lets an install card sit over a HOME-menu tile instead of in a sidebar.</li>
+  </ul>
+
+  <h3>Android</h3>
+  <ul>
+    <li><a href="https://cs.android.com/">AOSP</a> &mdash; the binary XML and
+      <code>resources.arsc</code> formats the APK parser implements, and <strong>bionic</strong>,
+      whose libc surface the shim table is written against.</li>
+    <li><a href="https://m3.material.io/">Material Design 3</a> &mdash; colour roles, the
+      tonal-palette model, and the shape and motion scales the launcher is built to.</li>
+    <li><a href="https://fonts.google.com/">Google Fonts</a> &mdash; Roboto Flex and
+      Material Symbols Rounded, bundled under the OFL.</li>
+  </ul>
+
+  <h3>Libraries and tools</h3>
+  <ul>
+    <li><a href="https://libsdl.org/">SDL2</a>, SDL2_ttf, SDL2_image; minizip/zlib;
+      libcurl over the Switch <code>ssl</code> sysmodule;
+      <a href="https://github.com/nothings/stb">stb</a>.</li>
+    <li><strong>newlib</strong> and its dlmalloc-derived allocator &mdash; whose chunk layout
+      and <code>sysmalloc</code> behaviour had to be understood in detail to diagnose the
+      Brain It On! fault. The boundary-tag invariant the heap checker validates comes
+      straight from that design.</li>
+    <li><strong>GNU binutils</strong> &mdash; objdump, readelf and nm. Most of the real
+      diagnosis in this project has been reading AArch64 disassembly, of game binaries and of
+      our own, rather than adding logging.</li>
+  </ul>
+</section>
+
+<section>
       <div id="reel-wrap">
         <div id="reel">
           <p style="text-align:center;color:var(--text-mute)">Loading credits…</p>
