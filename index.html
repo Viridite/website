@@ -72,7 +72,7 @@
       <p>Because of that, what runs and what doesn't comes down to what the shim happens to implement, not how "big" or "small" a game is in the abstract. Right now that means older, simple 2D games with an <code>arm64-v8a</code> build, OpenGL ES rendering, no Play Services dependency, and saves that stay on-device. Hill Climb Racing is the one game that's actually been pushed through this end-to-end — see below for exactly what that took.</p>
       <div class="card">
         <h3>What's confirmed working, on real hardware</h3>
-        <p style="margin-bottom:0">ELF loading and linking with zero unresolved symbols, real libnx threads standing in for pthreads, actual touch input reaching the game's own input handlers, real audio decoding (OGG/MP3/Opus/FLAC) through a custom SDL2_mixer backend, a locked 60fps during gameplay, and saves that persist across launches.</p>
+        <p style="margin-bottom:0">ELF loading and linking with zero unresolved symbols, real libnx threads standing in for pthreads, actual touch input reaching the game's own input handlers, real audio decoding (OGG/MP3/Opus/FLAC) through a custom SDL2_mixer backend, a locked 60fps during gameplay, and saves that persist across launches. Hill Climb Racing also plays on a controller — Viridite drives the game's own gamepad support from the Switch pad, which means it works docked — and the launcher updates itself over the network.</p>
       </div>
     </section>
 

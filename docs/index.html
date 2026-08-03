@@ -45,7 +45,9 @@
       <nav class="docs-sidebar" id="docs-sidebar" aria-label="Docs sections">
         <a href="#setup">Setup</a>
         <a href="#controls">Controls</a>
-        <a href="#architecture">Architecture</a>
+        <a href="#updating">Updating</a>
+              <a href="#managing-games">Managing a game</a>
+              <a href="#architecture">Architecture</a>
         <a href="#building">Building from source</a>
         <a href="#forwarders">Forwarders</a>
         <a href="#submitting-reports">Submitting a report</a>
@@ -69,23 +71,70 @@
 
         <section id="controls">
           <h2>Controls</h2>
-          <div class="callout warn">
-            <strong>Handheld mode only.</strong> Android games use touch screen input. The Switch touchscreen only works in handheld mode — in docked mode there is no touch input, so games will be uncontrollable. Viridite detects docked mode and shows a warning in the footer.
+          <div class="callout">
+            <strong>Docked play works for games with their own controller support.</strong> Android games are built for touch, and the Switch touchscreen only works in handheld mode. But some games ship real gamepad support, and where they do, Viridite drives it from the Switch pad — so those play docked. Hill Climb Racing is the first title wired up this way. Everything else is handheld-only, and the launcher says so in the footer when docked.
           </div>
+
+          <h3>In the launcher</h3>
           <div class="table-wrap">
             <table>
               <thead><tr><th>Input</th><th>Action</th></tr></thead>
               <tbody>
-                <tr><td>D-pad / left stick / swipe</td><td>Navigate the APK list</td></tr>
-                <tr><td><strong>A</strong> / tap a game</td><td>Launch selected APK</td></tr>
-                <tr><td><strong>X</strong></td><td>Reinstall + launch (re-extracts the APK)</td></tr>
+                <tr><td>D-pad / either stick / swipe</td><td>Move through the game list</td></tr>
+                <tr><td><strong>L</strong> / <strong>R</strong> / <strong>ZL</strong> / <strong>ZR</strong></td><td>Page a screenful at a time</td></tr>
+                <tr><td>Stick click</td><td>Jump to the top of the list</td></tr>
+                <tr><td><strong>A</strong> / tap a game</td><td>Launch</td></tr>
+                <tr><td><strong>B</strong></td><td>Manage the selected game — or back out of any screen</td></tr>
+                <tr><td><strong>X</strong></td><td>Reinstall and launch (re-extracts the APK)</td></tr>
                 <tr><td><strong>Y</strong></td><td>Rescan the APK folder</td></tr>
-                <tr><td><strong>−</strong></td><td>About screen (credits, scrollable via D-pad/stick/touch)</td></tr>
+                <tr><td><strong>−</strong></td><td>About and credits</td></tr>
                 <tr><td><strong>+</strong></td><td>Quit</td></tr>
-                <tr><td><strong>B</strong></td><td>Back (on result/about screens)</td></tr>
               </tbody>
             </table>
           </div>
+          <p>A USB keyboard works too — arrows and Page Up/Down to move, Enter to launch, Escape to back out. Every screen accepts the same inputs; there is no screen that only answers the D-pad.</p>
+
+          <h3>Choosing how to play</h3>
+          <p>For a game with controller support, the launcher asks before starting it — showing the controller it can actually see attached (Pro Controller, handheld, a Joy&#8209;Con pair, or a single Joy&#8209;Con held sideways) alongside a touch-screen option. It only asks when there's a genuine choice: docked with one controller, or a game with no controller path, goes straight to launching.</p>
+          <p>Whichever you pick is also used to patch the game's own controller-help screen, so the diagram it shows is the controller in your hands rather than the Android pad it was drawn for.</p>
+
+          <h3>Hill Climb Racing</h3>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Input</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td><strong>R</strong> / <strong>ZR</strong></td><td>Accelerate</td></tr>
+                <tr><td><strong>L</strong> / <strong>ZL</strong></td><td>Brake and reverse</td></tr>
+                <tr><td>D-pad / face buttons</td><td>Menus</td></tr>
+                <tr><td><strong>+</strong></td><td>Pause</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>That mapping was read out of the game's own binary rather than guessed: its touch handler and its controller handler write the same two pieces of state, and the accelerator is the right-hand pedal on screen.</p>
+        </section>
+
+        <section id="updating">
+          <h2>Updating</h2>
+          <p>Viridite checks for a newer release when it starts, on a background thread, so the game list stays responsive while it does. If a newer version exists you're asked whether to install it; nothing is downloaded or replaced unless you say yes.</p>
+          <p>Installing replaces the launcher and both Translation Core binaries together — a launcher from one release paired with a Core from another isn't a combination anyone tests. The new files are written and checked before anything existing is touched, so a failed update leaves your install exactly as it was.</p>
+          <p>A console with no network connection simply skips the check and says so in the log. Nothing about the launcher depends on being online.</p>
+        </section>
+
+        <section id="managing-games">
+          <h2>Managing a game</h2>
+          <p>Press <strong>B</strong> on any game for its settings, which mirror Android's own app-info screen:</p>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Action</th><th>Removes</th><th>Keeps</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Clear cache</strong></td><td>Extracted libraries and assets</td><td>Saves and settings</td></tr>
+                <tr><td><strong>Clear storage</strong></td><td>Everything for that game, saves included</td><td>Nothing</td></tr>
+                <tr><td><strong>Delete</strong></td><td>The APK and all of its data</td><td>Nothing</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Each shows how much space it would actually reclaim, measured off the card, and each needs a second press to confirm. Clearing the cache just means the game re-extracts next time it launches — progress is untouched.</p>
+          <p>There's also a per-game framerate cap here, for titles that run hot or drain battery faster than they need to.</p>
         </section>
 
         <section id="architecture">
