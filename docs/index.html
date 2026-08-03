@@ -141,7 +141,62 @@
         </section>
 
         <section id="architecture">
-          <h2>Architecture — launcher + Translation Core</h2>
+          <h2 id="themes">Themes</h2>
+<p>Viridite&rsquo;s launcher is built on <a href="https://m3.material.io/">Material&nbsp;3</a>
+(Material&nbsp;You). Every colour in the interface is a Material role &mdash; not a
+hand-picked value &mdash; generated from tonal palettes derived from a seed colour, so
+text always keeps a readable contrast against whatever sits behind it, whichever
+theme you pick.</p>
+<p>Press <strong>ZL</strong> on the game list (or <strong>P</strong> on a keyboard) to
+open the theme picker. Six schemes ship &mdash; <em>Viridite</em>, <em>Mint</em> and
+<em>Violet</em>, each in light and dark. Each row previews itself in its own colours.
+Your choice is remembered in <code>sdmc:/Viridite/theme.txt</code>.</p>
+<p>Type is <a href="https://fonts.google.com/specimen/Roboto+Flex">Roboto&nbsp;Flex</a>
+and the icons are <a href="https://fonts.google.com/icons">Material&nbsp;Symbols
+Rounded</a>, both from Google Fonts and bundled with the launcher &mdash; nothing is
+downloaded at runtime.</p>
+
+<h2 id="self-test">Self-test</h2>
+<p>Hold <strong>Y</strong> for five seconds on the game list to run a self-test. It
+checks the things that otherwise only show up as a failed launch: that both Translation
+Core binaries are present and are real builds rather than truncated copies, that the
+bundled artwork and system font load, that the SD card is genuinely writable (written,
+read back and deleted &mdash; a full or read-only card passes a simple existence check),
+free space, and every game&rsquo;s manifest, install and architecture.</p>
+<p>It will tell you, for example, that a game is marked installed but has no native
+libraries behind it &mdash; a half-finished extract that looks fine in the list and then
+fails at launch. Results are written to <code>sdmc:/Viridite/selftest.txt</code> and
+also copied into <code>launcher_log.txt</code>.</p>
+<h3>Deep test</h3>
+<p>With a game highlighted, press <strong>X</strong> on the self-test screen. Viridite
+hands over to the Translation Core, which loads that game exactly as a real launch does
+&mdash; extracting, mapping every native library, relocating, and resolving every
+imported symbol &mdash; then stops before any of the game&rsquo;s own code runs, and
+hands straight back with the result.</p>
+<p>It takes a couple of seconds and reports the load time and the number of unresolved
+symbols. Zero unresolved is what you want; a number climbing after an update means a
+function the game needs has gone missing from the compatibility layer.</p>
+
+<h2 id="orientation">Screen orientation</h2>
+<p>Android games declare which way up they expect to be, and Viridite honours it:</p>
+<ul>
+  <li><strong>Docked</strong> &mdash; landscape, always. A television does not rotate.</li>
+  <li><strong>Handheld, Joy-Cons attached</strong> &mdash; landscape too. You are holding
+      it like a gamepad, and turning the picture would put the controls on the wrong
+      edges.</li>
+  <li><strong>Handheld, Joy-Cons detached</strong> &mdash; follows the console.</li>
+</ul>
+<p>A portrait game under a landscape rule is drawn at its own aspect down the middle of
+the screen with black bars either side, never stretched.</p>
+<p>One hardware note: a Switch console has no motion sensor of its own &mdash; the
+accelerometers live in the Joy-Cons. While attached they are rigidly part of the console
+and report its orientation faithfully; detached, they report their own, which says
+nothing about how the console is being held. So on a standard Switch the one case that
+asks for auto-rotation is the one case that cannot sense it, and Viridite holds the last
+known orientation rather than spinning the screen because a Joy-Con was set down on a
+table. A Switch&nbsp;Lite has a built-in sensor and does not have this problem.</p>
+
+<h2>Architecture — launcher + Translation Core</h2>
           <p>Viridite is split into two pieces, in two separate repos, that chain-load into each other rather than being one monolithic binary:</p>
           <div class="repo-links">
             <div class="card">

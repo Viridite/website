@@ -1,30 +1,30 @@
 {
-  "generated_at": "2026-07-10T10:43:54.706521Z",
+  "generated_at": "2026-08-03T21:41:01.251499Z",
   "project_url": "https://github.com/orgs/Viridite/projects/1",
   "items": [
     {
-      "title": "Phase 0 \u2014 Make any game do something",
+      "title": "Phase 0 — Make any game do something",
       "status": "In progress",
       "team": "Cores Team",
-      "body": "APK browser, extraction, ELF loader, JNI shim, EGL, touch input, audio, save/load, and crash forensics are all done and confirmed on hardware \u2014 Hill Climb Racing is playable. Two items remain open: the Shop/IAP screen crash (root-caused, fix in \u2014 see the HCR items below) and confirming save persistence survives a full app restart."
+      "body": "APK browser, extraction, ELF loader, JNI shim, EGL, touch input, audio, save/load, and crash forensics are all done and confirmed on hardware — Hill Climb Racing is playable. Two items remain open: the Shop/IAP screen crash (root-caused, fix in — see the HCR items below) and confirming save persistence survives a full app restart."
     },
     {
-      "title": "Phase 2 \u2014 Stability",
+      "title": "Phase 2 — Stability",
       "status": "In progress",
       "team": "Cores Team",
-      "body": "Real pthread/mutex/condvar/rwlock/semaphore support and ordered .so loading are done. Still open: dl_iterate_phdr for stack unwinders, real .so/JIT unload (so a second game session doesn't need an app restart), and per-channel audio pitch/rate control (needs a custom resampler \u2014 SDL_mixer has no per-channel rate API)."
+      "body": "Real pthread/mutex/condvar/rwlock/semaphore support and ordered .so loading are done. Still open: dl_iterate_phdr for stack unwinders, real .so/JIT unload (so a second game session doesn't need an app restart), and per-channel audio pitch/rate control (needs a custom resampler — SDL_mixer has no per-channel rate API)."
     },
     {
-      "title": "Phase 3 \u2014 Polish",
+      "title": "Phase 3 — Polish",
       "status": "In progress",
       "team": "Cores Team",
       "body": "Themed UI, About screen, reinstall button, and version-bump system are done. Still open: a per-APK settings overlay (resolution/framerate cap) and APK delete/manage from the launcher UI."
     },
     {
-      "title": "Phase 5 \u2014 Feels like real Android device APIs",
+      "title": "Phase 5 — Feels like real Android device APIs",
       "status": "In progress",
       "team": "Cores Team",
-      "body": "Real accelerometer, gyroscope, and battery status are implemented via the real NDK Sensor API and libnx psm (untested against a live game \u2014 Hill Climb Racing uses none of them). Still open: real device info (Build.MODEL etc.) \u2014 blocked on a JNI static-field-dispatch refactor, since FindClass/GetStaticFieldID currently returns the same dummy ID for every field."
+      "body": "Real accelerometer, gyroscope, and battery status are implemented via the real NDK Sensor API and libnx psm (untested against a live game — Hill Climb Racing uses none of them). Still open: real device info (Build.MODEL etc.) — blocked on a JNI static-field-dispatch refactor, since FindClass/GetStaticFieldID currently returns the same dummy ID for every field."
     },
     {
       "title": "Shop/IAP screen crash",
@@ -39,28 +39,28 @@
       "body": "Running AArch32 code on Switch is possible in principle via a per-title Atmosphere address-space override, but the one real precedent project depends on a 32-bit libnx build that isn't publicly available. The launcher already detects and blocks 32-bit-only APKs with an explanation rather than attempting it."
     },
     {
-      "title": "Hill Climb Racing \u2014 UserDefaults save: durability vs. stall tradeoff",
+      "title": "Hill Climb Racing — UserDefaults save: durability vs. stall tradeoff",
       "status": "Todo",
       "team": "Cores Team",
-      "body": "A background-thread save (to kill the ~700-900ms/save stall) was tried 2026-07-10, then reverted same day: the first real hardware test showed total save loss (every relaunch fresh), likely compounded by the still-open Shop-screen hard crash skipping the synchronous exit-time save entirely. Saves are synchronous again \u2014 durable, but the original stalls are back. Needs: (1) root-cause the Shop crash so there's always a clean exit path, (2) separately, real hardware evidence before trying an async save path again."
+      "body": "A background-thread save (to kill the ~700-900ms/save stall) was tried 2026-07-10, then reverted same day: the first real hardware test showed total save loss (every relaunch fresh), likely compounded by the still-open Shop-screen hard crash skipping the synchronous exit-time save entirely. Saves are synchronous again — durable, but the original stalls are back. Needs: (1) root-cause the Shop crash so there's always a clean exit path, (2) separately, real hardware evidence before trying an async save path again."
     },
     {
-      "title": "Hill Climb Racing \u2014 first-load Event-texture stall (~8s)",
+      "title": "Hill Climb Racing — first-load Event-texture stall (~8s)",
       "status": "Todo",
       "team": "Cores Team",
-      "body": "A separate, unexplained one-time ~8160ms stall at first load, logged immediately before the game's own \"[fsgame] Event textures asset loaded (33/33)\" line \u2014 looks like the game's own synchronous texture-atlas decode, not a compat-layer bug. Our socket layer is fully stubbed (instant ECONNREFUSED), so it isn't a network timeout. Not investigated further yet."
+      "body": "A separate, unexplained one-time ~8160ms stall at first load, logged immediately before the game's own \"[fsgame] Event textures asset loaded (33/33)\" line — looks like the game's own synchronous texture-atlas decode, not a compat-layer bug. Our socket layer is fully stubbed (instant ECONNREFUSED), so it isn't a network timeout. Not investigated further yet."
     },
     {
-      "title": "Idea \u2014 Mii driver support",
+      "title": "Idea — Mii driver support",
       "status": "Todo",
       "team": "Cores Team",
       "body": "Replace Hill Climb Racing's driver with the player's own Mii. The driver is a modular Box2D ragdoll rig (separate head/body/beard/hat pieces) that already supports full re-skins this way. Concrete path: fetch the Switch user's Mii face via libnx account's accountProfileLoadImage (a JPEG) and patch it over driver-head.png using the same asset-patch pipeline already built for the MOGA controller image."
     },
     {
-      "title": "Phase 4 \u2014 Real controller support (docked mode)",
+      "title": "Phase 4 — Real controller support (docked mode)",
       "status": "Todo",
       "team": "Cores Team",
-      "body": "Not started \u2014 right now only touch input exists (handheld-only). Hill Climb Racing has native MOGA controller support built in (confirmed via bundled MOGA Pro/Pocket assets + save-key reads), and MOGA's face-button layout is a diagonal swap (A\u2194B, X\u2194Y) from Switch's own \u2014 mapping Joy-Con/Pro Controller input to the game's existing MOGA listener could be a real shortcut here, no game-side changes needed."
+      "body": "Not started — right now only touch input exists (handheld-only). Hill Climb Racing has native MOGA controller support built in (confirmed via bundled MOGA Pro/Pocket assets + save-key reads), and MOGA's face-button layout is a diagonal swap (A↔B, X↔Y) from Switch's own — mapping Joy-Con/Pro Controller input to the game's existing MOGA listener could be a real shortcut here, no game-side changes needed."
     },
     {
       "title": "Tico emulator core (\"Horizon\")",
@@ -78,7 +78,7 @@
       "title": "Automatic opt-in compatibility telemetry",
       "status": "Todo",
       "team": "Website Team",
-      "body": "Auto-submit compat reports from Switches connected to Wi-Fi, gated behind an explicit opt-in in Settings with real legal/privacy compliance copy \u2014 not on by default. Longer-term: a live \"is this game known to work\" lookup while online."
+      "body": "Auto-submit compat reports from Switches connected to Wi-Fi, gated behind an explicit opt-in in Settings with real legal/privacy compliance copy — not on by default. Longer-term: a live \"is this game known to work\" lookup while online."
     },
     {
       "title": "Compat-report APK integrity check",
@@ -99,7 +99,7 @@
       "body": "Group same-package-ID submissions with different versions into an expandable dropdown; add sorting, a search bar, and separate x32/x64 tabs; fuzzy search; group games by publisher using the package-ID prefix (e.g. com.kiloo.* under Kiloo); blur PEGI-18 game images by default for a family-friendly page, looked up by package ID."
     },
     {
-      "title": "Credits \u2014 smooth auto-scroll",
+      "title": "Credits — smooth auto-scroll",
       "status": "Todo",
       "team": "Website Team",
       "body": "Replace the static credits list (in-app and on the website) with a smoothly auto-scrolling one, similar to Hill Climb Racing's own credits screen."
@@ -111,10 +111,46 @@
       "body": "Make docs read like an actual documentation site (real nav/structure/search) instead of one flat page; carry the same redesign into the rest of the website, taking cues from Bluesky's light-mode UI for readability."
     },
     {
-      "title": "Phase 1 \u2014 Touch input",
+      "title": "Phase 1 — Touch input",
       "status": "Done",
       "team": "Cores Team",
       "body": "Switch touchscreen mapped directly to the game's native touch calls; confirmed steering Hill Climb Racing on real hardware."
+    },
+    {
+      "title": "Material You launcher",
+      "status": "Done",
+      "team": "Cores Team",
+      "body": "The launcher is now built on Material 3: colour roles generated from tonal palettes rather than hand-picked, the M3 corner-radius scale throughout, Roboto Flex and Material Symbols bundled from Google Fonts, and six themes (Viridite, Mint, Violet — light and dark)."
+    },
+    {
+      "title": "On-console self-test and deep test",
+      "status": "Done",
+      "team": "Cores Team",
+      "body": "Hold Y for a self-test covering binaries, assets, card writability, and every game's manifest and install. X deep-tests the selected game by loading it through the real Translation Core and stopping before its code runs."
+    },
+    {
+      "title": "Screen orientation",
+      "status": "Done",
+      "team": "Cores Team",
+      "body": "Portrait and landscape handled per the game's manifest; pillarboxed rather than stretched; follows the console when the Joy-Cons are detached and a sensor can speak for it."
+    },
+    {
+      "title": "HOME menu install overlay",
+      "status": "Todo",
+      "team": "Cores Team",
+      "body": "A Tesla overlay showing install progress over the HOME menu, anchored to the forwarder tile. Ships in the release zip; needs nx-ovlloader."
+    },
+    {
+      "title": "In-app game catalogue",
+      "status": "Todo",
+      "team": "Cores Team",
+      "body": "Browse and obtain games from inside Viridite."
+    },
+    {
+      "title": "Brain It On! — allocator fault during static initialisers",
+      "status": "In progress",
+      "team": "Cores Team",
+      "body": "155 of libunity's 421 constructors fault in _free_r via _malloc_r, with av->top pointing at zeroed arena memory. Loader itself is verified healthy: all 2,641 symbols resolve and a dry load completes in under two seconds."
     }
   ]
 }
