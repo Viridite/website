@@ -192,7 +192,7 @@ header.site .bar {
 
 /* The gem logo is designed to sit on white — give it a white tile so it reads
    correctly on any header background (incl. dark mode). */
-header.site img.logo { width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0; background: #fff; padding: 3px; }
+header.site img.logo { width: 32px; height: 32px; object-fit: contain; border-radius: 9px; flex-shrink: 0; background: #fff; padding: 3px; }
 
 header.site .brand {
   font-weight: 800;
@@ -278,6 +278,7 @@ main { padding: var(--sp-2) 0 var(--sp-20); }
 
 .hero img.logo-lg {
   width: 116px; height: 116px;
+  object-fit: contain;          /* mark is tall (0.58) — never stretch it to the box */
   display: block;
   margin: 0 auto var(--sp-5);   /* block img isn't centred by text-align — do it here */
   background: #fff;             /* logo is designed to sit on white */
