@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Privacy Policy — Viridite</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="What Viridite collects (almost nothing), what it publishes, and your rights.">
+<meta property="og:title" content="Viridite — Privacy Policy">
+<meta property="og:description" content="What Viridite collects (almost nothing), what it publishes, and your rights.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://viridite.aaronworld.uk/privacy">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/style.css?v=10">
+<style>
+  .legal h2 { margin-top: 2.2rem; }
+  .legal h3 { margin-top: 1.4rem; font-size: var(--fs-lg); }
+  .legal li { margin: .35rem 0; }
+  .legal .updated { color: var(--muted); font-size: var(--fs-sm); }
+  .legal .callout {
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius-md);
+    background: var(--surface);
+    padding: 1rem 1.1rem;
+    margin: 1.4rem 0;
+  }
+  .legal dt { font-weight: 600; margin-top: .9rem; }
+  .legal dd { margin: .2rem 0 0 0; color: var(--muted); }
+</style>
+</head>
+<body>
+<header class="site">
+  <div class="wrap bar">
+    <img class="logo" src="assets/img/logo-64.png" alt="" width="32" height="32">
+    <span class="brand">Virid<span>ite</span></span>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-controls="nav-menu" aria-label="Toggle navigation" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <nav class="site" id="nav-menu" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="compatibility">Compatibility</a>
+      <a href="roadmap">Roadmap</a>
+      <a href="credits">Credits</a>
+      <a href="docs">Docs</a>
+      <a href="https://github.com/Viridite">GitHub</a>
+      <a class="cta" href="download">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap legal">
+
+    <div class="hero compact">
+      <h1 style="font-size:var(--fs-3xl)">Privacy Policy</h1>
+      <p class="tagline">Short, because there is very little to say.</p>
+      <p class="updated">Last updated 4 August 2026</p>
+    </div>
+
+    <section>
+      <div class="callout">
+        <strong>In one paragraph.</strong> This website sets no cookies, runs no analytics, and
+        loads no third-party scripts. The Viridite software on your console sends nothing
+        anywhere. The only personal data the project ever receives is what you deliberately type
+        into the compatibility report form — and everything submitted through that form is
+        <strong>published publicly</strong> on GitHub. Do not put anything in it you would not
+        post in public.
+      </div>
+
+      <h2>Who is responsible</h2>
+      <p>
+        The data controller is the Viridite project, an open-source project maintained by
+        volunteers and operated from the United Kingdom. Contact:
+        <a href="mailto:legal@aaronworld.uk">legal@aaronworld.uk</a>, or
+        <a href="https://github.com/Viridite/Viridite/issues">an issue on GitHub</a>. The project
+        is below the threshold at which a statutory Data Protection Officer is required, and has
+        not appointed one.
+      </p>
+
+      <h2>The website</h2>
+      <p>
+        No cookies are set. No local storage or session storage is used to track you. There is no
+        analytics package, no tag manager, no advertising, no social embeds, and no fonts or
+        scripts fetched from third-party servers.
+      </p>
+      <p>
+        The site is served by a hosting provider (Vercel) and some requests pass through
+        Cloudflare. Like any web host, these process your IP address and request metadata in order
+        to deliver the page and to protect against abuse. That processing is theirs, under their
+        own policies; the project does not receive, store or have access to those server logs.
+      </p>
+
+      <h2>The software</h2>
+      <p>
+        Viridite running on your console does not phone home. It has no telemetry, no crash
+        reporting, no update check that identifies you, and no account system. Logs it writes
+        (<code>compat_log.txt</code>, <code>launcher_log.txt</code>) stay on your SD card until
+        you choose to do something with them.
+      </p>
+      <p>
+        Games run through Viridite are a separate matter. A game may contain its own analytics,
+        advertising or network code, and if your console is online that code may run. Viridite
+        does not add that, cannot fully prevent it, and has no visibility into what a given game
+        sends. Its network activity is logged locally so you can see it.
+      </p>
+
+      <h2>Compatibility reports</h2>
+      <p>If you submit a report through <a href="submit">the form</a>, it collects:</p>
+      <ul>
+        <li>the game you tested and the source you obtained it from;</li>
+        <li>your description of what happened and any notes you add;</li>
+        <li>the log files you choose to attach;</li>
+        <li>your GitHub username, if you supply one — this is optional and used only for credit.</li>
+      </ul>
+      <p>
+        The logs contain the Viridite version, your console's firmware and Atmosphère versions,
+        the game's package name, file paths on your SD card, performance measurements and a trace
+        of the calls the game made. They do not contain your Nintendo account, your console's
+        serial number, your network details or your profile name. They may contain in-game values
+        such as save-file keys. <strong>Read a log before you attach it.</strong>
+      </p>
+
+      <h3>Where it goes</h3>
+      <p>
+        Submissions are written to the public
+        <a href="https://github.com/Viridite/compat-reports">compat-reports</a> repository on
+        GitHub. They are public from the moment they are accepted, are indexed by search engines,
+        and are copied by GitHub's own forking and archiving. Publication is the entire purpose of
+        the form: the compatibility list is built from it.
+      </p>
+
+      <h3>Legal basis and retention</h3>
+      <p>
+        Where UK/EU data protection law applies, the basis for processing a report is your
+        consent (Article 6(1)(a)), given by submitting the form, together with the project's
+        legitimate interest in maintaining a public compatibility record (Article 6(1)(f)). No
+        special-category data is sought and none should be submitted.
+      </p>
+      <p>
+        Reports are kept indefinitely, because a compatibility record is only useful as a history.
+        You can ask for yours to be removed — see below — though note that anything already
+        public may persist in forks, caches and archives outside the project's control.
+      </p>
+
+      <h3>Who else sees it</h3>
+      <p>
+        GitHub, Inc. (a Microsoft company) hosts the repository. Cloudflare operates the worker
+        that relays submissions. Both are processors for this purpose and both are located in, or
+        transfer data to, the United States. Transfers rely on the UK International Data Transfer
+        Addendum and the EU Standard Contractual Clauses as incorporated into those providers'
+        terms, and on the EU-US and UK-US Data Privacy Framework where the provider participates.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        Depending on where you live you may have some or all of the following rights. The project
+        applies them to everyone, regardless of jurisdiction, because maintaining two standards
+        for a form this small would be absurd.
+      </p>
+      <dl>
+        <dt>Access</dt><dd>Ask what the project holds about you. In practice: everything is already public.</dd>
+        <dt>Rectification</dt><dd>Ask for inaccurate data to be corrected.</dd>
+        <dt>Erasure</dt><dd>Ask for a report to be deleted. Granted on request for your own submissions.</dd>
+        <dt>Restriction and objection</dt><dd>Ask that processing stop while a dispute is resolved, or object to processing based on legitimate interests.</dd>
+        <dt>Portability</dt><dd>Receive your data in a machine-readable form. Reports are already JSON and plain text in a public git repository.</dd>
+        <dt>Withdraw consent</dt><dd>At any time, without affecting processing already carried out.</dd>
+        <dt>Complain</dt><dd>To your supervisory authority. In the UK that is the <a href="https://ico.org.uk/">Information Commissioner's Office</a>; in the EU, your national authority.</dd>
+      </dl>
+      <p>
+        For California residents under the CCPA/CPRA: the categories above are the only personal
+        information collected. It is <strong>not sold and not shared</strong> for cross-context
+        behavioural advertising, and never has been. You have the right to know, delete, correct
+        and opt out, and you will not be treated differently for exercising any of them. There is
+        no financial incentive programme.
+      </p>
+      <p>
+        Equivalent rights under other regimes — PIPEDA in Canada, the LGPD in Brazil, the APPI in
+        Japan, POPIA in South Africa, the Australian Privacy Principles, and comparable US state
+        laws — are honoured on the same terms. Write to the contact address above and say what you
+        want done.
+      </p>
+
+      <h2>Children</h2>
+      <p>
+        Viridite is not directed at children and the project does not knowingly collect personal
+        data from anyone under 16. If you believe a child has submitted a report, tell us and it
+        will be removed.
+      </p>
+
+      <h2>Automated decision-making</h2>
+      <p>
+        Submitted APK metadata is parsed automatically to fill in the compatibility list. That
+        produces no legal or similarly significant effect on any person, and no profiling of
+        individuals is performed.
+      </p>
+
+      <h2>Changes</h2>
+      <p>
+        Changes to this policy are made in public, in the website's git history. The date at the
+        top is the date of the last change.
+      </p>
+    </section>
+
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap">
+    Made by <a href="https://aaronworld.uk">aaronworld.uk</a>, mostly written by Claude AI
+    <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
+    <span class="dot">·</span><a href="https://github.com/Viridite">GitHub org</a>
+    <span class="dot">·</span><a href="https://github.com/Viridite/Viridite/blob/main/LICENSE">License</a>
+    <span class="dot">·</span><a href="legal">Legal</a>
+    <span class="dot">·</span><a href="privacy">Privacy</a>
+    <span class="dot">·</span><a href="terms">Terms</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var toggle = document.getElementById("nav-toggle");
+  var menu = document.getElementById("nav-menu");
+  if (!toggle || !menu) return;
+  toggle.addEventListener("click", function () {
+    var open = menu.classList.toggle("open");
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+})();
+</script>
+</body>
+</html>

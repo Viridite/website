@@ -49,10 +49,12 @@
         <a href="#setup">Setup</a>
         <a href="#controls">Controls</a>
         <a href="#updating">Updating</a>
+              <a href="#adding-a-game">Adding a game</a>
               <a href="#managing-games">Managing a game</a>
+              <a href="#forwarders">Forwarders</a>
+              <a href="#boot">Starting a game</a>
               <a href="#architecture">Architecture</a>
         <a href="#building">Building from source</a>
-        <a href="#forwarders">Forwarders</a>
         <a href="#submitting-reports">Submitting a report</a>
         <a href="#more">More</a>
       </nav>
@@ -138,6 +140,59 @@
           </div>
           <p>Each shows how much space it would actually reclaim, measured off the card, and each needs a second press to confirm. Clearing the cache just means the game re-extracts next time it launches — progress is untouched.</p>
           <p>There's also a per-game framerate cap here, for titles that run hot or drain battery faster than they need to.</p>
+        </section>
+
+        <section id="adding-a-game">
+          <h2>Adding a game</h2>
+          <p>Viridite ships no games. You supply the APK.</p>
+          <p>Copy the <code>.apk</code> (or <code>.xapk</code>) onto your SD card at
+             <code>/Viridite/apks/</code> and it appears in the launcher next time you open it.
+             That is the whole process &mdash; there is no import step, no conversion, and nothing
+             to register.</p>
+          <p>Split APKs are handled: an <code>.xapk</code> is unpacked and its
+             <code>config.*</code> splits merged automatically, so games distributed that way work
+             without being reassembled by hand first.</p>
+          <p>The game must contain native ARM code &mdash; <code>arm64-v8a</code> or
+             <code>armeabi-v7a</code>. Viridite runs the game&rsquo;s own machine code directly, so
+             a title written purely in Java or Kotlin has nothing for it to run. The launcher tells
+             you which architecture an APK contains before you launch it.</p>
+          <p><strong>Where you get the APK is your responsibility.</strong> Use a copy you have
+             lawfully obtained. Viridite does not download games, does not link to pirated sources,
+             and cannot grant you rights in someone else&rsquo;s software &mdash; see
+             <a href="legal">Legal</a>.</p>
+          <p>If a game works, or fails in an interesting way,
+             <a href="submit">tell us</a>: the compatibility list is built entirely from reports.</p>
+        </section>
+
+        <section id="forwarders">
+          <h2>Forwarders</h2>
+          <p>Installing a game writes a forwarder to
+             <code>/switch/Viridite Games/&lt;package&gt;.nro</code>. hbmenu lists it with the
+             game&rsquo;s own name, icon and version, and selecting it goes straight into the game
+             rather than into Viridite&rsquo;s list.</p>
+          <p>Uninstalling removes it again, and every time the launcher scans your APKs it
+             reconciles that folder against what is actually installed &mdash; so it can never
+             show an entry for a game that is no longer there.</p>
+          <p>Every forwarder is the same small stub binary. What differs is the metadata appended
+             to it and the filename, which is the Android package name; the stub reads that back
+             from its own path and hands off to the Translation Core. Nothing is compiled on your
+             console.</p>
+          <p>The author line credits the game&rsquo;s developer first, then Viridite &mdash;
+             <em>Fingersoft&nbsp;|&nbsp;Viridite Contributors</em> &mdash; and the version shown is
+             the <em>game&rsquo;s</em> version, not Viridite&rsquo;s, because the entry describes
+             the game it will start.</p>
+        </section>
+
+        <section id="boot">
+          <h2>Starting a game</h2>
+          <p>Launching a game runs a loading screen while the APK is unpacked and its libraries
+             are mapped. When the game is genuinely ready, the gem animation you have been
+             watching completes: it pulses, breaks, and the game&rsquo;s own icon bursts through,
+             against a short jingle. The screen falls to black and the game fades up out of it.</p>
+          <p>The jingle is a MIDI file rendered on the console rather than a recording &mdash;
+             a few hundred bytes of notes, synthesised as struck crystal, which is what Viridite is
+             named after. You can rewrite it: it lives in
+             <code>tools/make_jingle.py</code> in the launcher repository.</p>
         </section>
 
         <section id="architecture">
@@ -229,10 +284,11 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
           <p><strong>Prebuilt releases</strong> (no toolchain needed) are published on the <a href="https://github.com/Viridite/Viridite/releases">Releases page</a> — each one bundles the launcher plus both Translation Core builds, ready to drag onto an SD card. Releases are built and published automatically by a GitHub Actions workflow (manually triggered by org staff) that also generates an in-depth changelog and refreshes the in-app contributor credits from every repo in the org.</p>
         </section>
 
-        <section id="forwarders">
-          <h2>Forwarders — a dedicated home-menu icon per game</h2>
-          <p>Viridite can boot straight into one specific game, skipping the app-list picker entirely — the same idea as a RetroArch forwarder that jumps straight into a ROM+core instead of RetroArch's own content browser.</p>
-          <p>Pass the game's package name (e.g. <code>com.fingersoft.hillclimb</code>) as the first argument when launching <code>Viridite.nro</code>. This uses libnx's standard <code>envSetNextLoad(path, argv)</code> chain-load mechanism — the same one homebrew forwarders (RetroArch included) use. If the requested package isn't installed, Viridite falls back to the normal app-list picker with an on-screen notice.</p>
+        <section id="forwarders-manual">
+          <h2>Launching a game directly</h2>
+          <p>The mechanism <a href="#forwarders">forwarders</a> are built on is available by hand too. Pass a game&rsquo;s package name (e.g. <code>com.fingersoft.hillclimb</code>) as the first argument when launching <code>Viridite.nro</code> and it boots straight into that game, skipping the app-list picker — the same idea as a RetroArch forwarder jumping straight to a ROM+core rather than RetroArch&rsquo;s own browser.</p>
+          <p>This is libnx&rsquo;s standard <code>envSetNextLoad(path, argv)</code> chain-load, which is what every homebrew forwarder uses. If the requested package isn&rsquo;t installed, Viridite falls back to the normal picker with an on-screen notice.</p>
+          <p>Since forwarders are generated automatically on install, you rarely need this — it is useful for your own scripts and shortcuts.</p>
         </section>
 
         <section id="submitting-reports">
@@ -267,6 +323,9 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
     <span class="dot">·</span><a href="https://discord.gg/EXpgrAJh">Discord<span id="discord-count"></span></a>
     <span class="dot">·</span><a href="https://github.com/Viridite">GitHub org</a>
     <span class="dot">·</span><a href="https://github.com/Viridite/Viridite/blob/main/LICENSE">License</a>
+    <span class="dot">·</span><a href="/legal">Legal</a>
+    <span class="dot">·</span><a href="/privacy">Privacy</a>
+    <span class="dot">·</span><a href="/terms">Terms</a>
   </div>
 </footer>
 
