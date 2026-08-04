@@ -15,19 +15,6 @@
 <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
 <link rel="stylesheet" href="assets/style.css?v=10">
 
-<style>
-  /* The reel grows with its content and only becomes a scrolling "rolling
-     credits" panel once there's actually more than fits. Previously this was a
-     fixed 60vh box, which read as broken while the project has a handful of
-     contributors — mostly empty, auto-scrolling nothing. */
-  #reel-wrap {
-    position: relative;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md);
-    background: var(--surface);
-    box-shadow: var(--shadow-sm);
-    overflow: hidden;
-  }
   #reel-wrap.is-scrolling { height: 60vh; min-height: 380px; }
   /* Fade masks only make sense when content runs past the edges. */
   #reel-wrap.is-scrolling::before, #reel-wrap.is-scrolling::after {
@@ -284,19 +271,6 @@
 })();
 </script>
 
-<script>
-(function () {
-  var ONLINE_THRESHOLD = 25;
-  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (data) {
-      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
-        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
-      }
-    })
-    .catch(function () {});
-})();
-
 (function () {
   // Each source contributes a ROLE to a person, rather than its own section.
   // The same person working across four repos is one human who did four
@@ -476,5 +450,6 @@
   });
 })();
 </script>
+<script src="assets/discord-link.js"></script>
 </body>
 </html>

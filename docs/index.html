@@ -33,19 +33,6 @@
       <a href="https://github.com/Viridite">GitHub</a>
       <a class="cta" href="../download">Download</a>
     </nav>
-  </div>
-</header>
-
-<main>
-  <div class="wrap">
-
-    <div class="hero compact">
-      <h1 style="font-size:var(--fs-3xl)">Docs</h1>
-      <p class="tagline">Setup, controls, architecture, and building from source.</p>
-    </div>
-
-    <div class="docs-layout">
-      <nav class="docs-sidebar" id="docs-sidebar" aria-label="Docs sections">
         <a href="#setup">Setup</a>
         <a href="#controls">Controls</a>
         <a href="#updating">Updating</a>
@@ -371,18 +358,6 @@ switch-mesa switch-glad switch-curl switch-mbedtls</code></pre>
 })();
 </script>
 
-<script>
-(function () {
-  var ONLINE_THRESHOLD = 25;
-  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (data) {
-      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
-        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
-      }
-    })
-    .catch(function () {});
-})();
-</script>
+<script src="assets/discord-link.js"></script>
 </body>
 </html>

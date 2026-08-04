@@ -30,19 +30,6 @@
       <a href="https://github.com/Viridite">GitHub</a>
       <a class="cta" href="download">Download</a>
     </nav>
-  </div>
-</header>
-
-<main>
-  <div class="wrap" style="max-width:720px">
-
-    <div class="hero compact">
-      <h1 style="font-size:var(--fs-3xl)">Submit a compatibility report</h1>
-      <p class="tagline">No GitHub account needed. This gets analyzed automatically and shows up on the <a href="compatibility">compatibility page</a> within a few minutes.</p>
-    </div>
-
-    <div class="callout warn">
-      You need all three log files from <code>sdmc:/Viridite/</code>: <code>launcher_log.txt</code>, <code>compat_log.txt</code>, and <code>&lt;package&gt;/log.txt</code>. The game's name, package, and version are read straight out of the APK itself once it's downloaded — you don't need to type any of that.
     </div>
 
     <form id="report-form">
@@ -132,19 +119,6 @@
 })();
 </script>
 
-<script>
-(function () {
-  var ONLINE_THRESHOLD = 25;
-  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (data) {
-      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
-        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
-      }
-    })
-    .catch(function () {});
-})();
-
 (function () {
   // Wires each log's file input to read the picked file client-side and
   // drop its text into the matching textarea — same field the paste path
@@ -171,6 +145,7 @@
   });
 })();
 
+  <script src="assets/discord-link.js"></script>
 (function () {
   var RELAY_URL = "https://android-horizon-compat-relay.zeraoralegendary.workers.dev";
   var MAX_APK_UPLOAD_BYTES = 300 * 1024 * 1024;

@@ -33,19 +33,6 @@
       <a href="https://github.com/Viridite">GitHub</a>
       <a class="cta" href="download">Download</a>
     </nav>
-  </div>
-</header>
-
-<main>
-  <div class="wrap">
-
-    <div class="hero compact">
-      <h1 style="font-size:var(--fs-3xl)">Game Compatibility</h1>
-      <p class="tagline">Every row below came from someone actually running the game on hardware — nothing here is guessed.</p>
-      <div class="btn-row">
-        <a class="btn primary" href="submit">Submit a compatibility report</a>
-        <a class="btn secondary" href="https://github.com/Viridite/compat-reports">Browse raw logs</a>
-      </div>
     </div>
 
     <div class="callout warn">
@@ -136,20 +123,6 @@
       toggle.setAttribute("aria-expanded", "false");
     });
   });
-})();
-</script>
-
-<script>
-(function () {
-  var ONLINE_THRESHOLD = 25;
-  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (data) {
-      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
-        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
-      }
-    })
-    .catch(function () {});
 })();
 </script>
 
@@ -392,5 +365,6 @@
     });
 })();
 </script>
+  <script src="assets/discord-link.js"></script>
 </body>
 </html>

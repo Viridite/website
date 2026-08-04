@@ -146,18 +146,6 @@
 })();
 </script>
 
-<script>
-(function () {
-  var ONLINE_THRESHOLD = 25;
-  fetch("https://discord.com/api/guilds/1523655566851969034/widget.json")
-    .then(function (r) { return r.ok ? r.json() : null; })
-    .then(function (data) {
-      if (data && typeof data.presence_count === "number" && data.presence_count >= ONLINE_THRESHOLD) {
-        document.getElementById("discord-count").textContent = " (" + data.presence_count + " online)";
-      }
-    })
-    .catch(function () {});
-})();
-</script>
+  <script src="assets/discord-link.js"></script>
 </body>
 </html>
