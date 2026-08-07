@@ -89,6 +89,18 @@
     </section>
 
     <section>
+      <h2 style="font-size:var(--fs-lg)">Games that run</h2>
+      <p style="color:var(--text-mute);font-size:var(--fs-sm)">
+        Pick one, fetch its APK from the link, then attach the file below.
+        Viridite cannot host or ship these — they are not ours to distribute —
+        so the download is from the public listing and the file stays on your
+        machine.
+      </p>
+      <div id="catalogue"><p style="color:var(--text-mute)">Loading the compatibility list…</p></div>
+    </section>
+
+    <section>
+      <h2 style="font-size:var(--fs-lg)">Attach the APK</h2>
       <label class="drop" id="drop">
         <input type="file" id="file" accept=".apk,application/vnd.android.package-archive">
         <strong id="drop-title">Choose an APK, or drop one here</strong>
@@ -221,6 +233,51 @@ async function handleApk(file) {
     $('drop-title').textContent = 'Choose an APK, or drop one here';
     $('drop-sub').textContent = e.message;
   }
+}
+
+// ── The catalogue ─────────────────────────────────────────────────────────
+// Driven by the same compatibility data the rest of the site uses, so a game
+// appears here the moment it is confirmed to run — there is no second list to
+// keep in step and no chance of offering something that does not work.
+const RUNS = new Set(['flawless', 'playable', 'pass']);
+
+fetch('data/games.json')
+  .then(r => r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)))
+  .then(games => {
+    const ok = games.filter(g => RUNS.has(String(g.verdict).toLowerCase()));
+    const el = $('catalogue');
+    if (!ok.length) {
+      el.innerHTML = '<p style="color:var(--text-mute)">No games are confirmed working yet. '
+                   + 'You can still attach any APK below — it just has not been tested.</p>';
+      return;
+    }
+    el.innerHTML = ok.map(g => {
+      const name = String(g.game_name);
+      const pkg  = String(g.package_name || '');
+      // APKPure's search, not a direct file link: versions come and go, and a
+      // link to a build that has been pulled is worse than a search that works.
+      const url = 'https://apkpure.com/search?q=' + encodeURIComponent(pkg || name);
+      return `<div class="card" style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+        <div style="flex:1 1 16rem;min-width:0">
+          <strong>${esc(name)}</strong>
+          <div style="color:var(--text-mute);font-size:var(--fs-sm)">
+            ${esc(pkg)}${g.version_name ? ' · tested on ' + esc(String(g.version_name)) : ''}
+          </div>
+          <div style="font-size:var(--fs-sm);margin-top:.25rem">${esc(String(g.verdict_label || ''))}</div>
+        </div>
+        <a class="btn" href="${url}" target="_blank" rel="noopener noreferrer">Get the APK</a>
+      </div>`;
+    }).join('');
+  })
+  .catch(e => {
+    $('catalogue').innerHTML =
+      '<p style="color:var(--text-mute)">Could not load the compatibility list ('
+      + esc(e.message) + '). Attaching an APK below still works.</p>';
+  });
+
+function esc(s) {
+  return s.replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
 $('file').addEventListener('change', e => { if (e.target.files[0]) handleApk(e.target.files[0]); });
