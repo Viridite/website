@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Store — Viridite</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Turn an Android APK into a Viridite forwarder for the Switch HOME menu — entirely in your browser. Nothing is uploaded.">
+<meta property="og:title" content="Viridite — Store">
+<meta property="og:description" content="Make a forwarder from an APK, in your browser. Nothing is uploaded.">
+<meta property="og:type" content="website">
+<link rel="canonical" href="https://viridite.aaronworld.uk/store">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
+<link rel="icon" type="image/svg+xml" href="assets/img/logo.svg">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+<link rel="stylesheet" href="assets/style.css?v=10">
+<style>
+  .drop {
+    border: 2px dashed var(--line, #2b4a38);
+    border-radius: 14px;
+    padding: var(--sp-6, 2rem);
+    text-align: center;
+    transition: border-color .15s, background .15s;
+    cursor: pointer;
+  }
+  .drop.over { border-color: var(--accent, #00c853); background: rgba(0, 200, 83, .07); }
+  .drop input { display: none; }
+  .fwd-grid { display: grid; grid-template-columns: 128px 1fr; gap: var(--sp-5, 1.25rem); align-items: start; }
+  @media (max-width: 560px) { .fwd-grid { grid-template-columns: 1fr; } }
+  .fwd-icon {
+    width: 128px; height: 128px; border-radius: 22px; object-fit: cover;
+    background: rgba(0, 200, 83, .1); display: block;
+  }
+  .fwd-fields label { display: block; margin-bottom: .85rem; }
+  .fwd-fields span { display: block; font-size: var(--fs-sm, .875rem); color: var(--text-mute, #9bb3a5); margin-bottom: .25rem; }
+  .fwd-fields input {
+    width: 100%; padding: .5rem .7rem; border-radius: 8px;
+    border: 1px solid var(--line, #2b4a38);
+    background: var(--bg-2, #0d1a13); color: inherit; font: inherit;
+  }
+  #log { font-size: var(--fs-sm, .875rem); color: var(--text-mute, #9bb3a5); white-space: pre-wrap; }
+  .hidden { display: none; }
+</style>
+</head>
+
+<body>
+<header class="site">
+  <div class="wrap bar">
+    <img class="logo" src="assets/img/logo-64.png" alt="" width="32" height="32">
+    <span class="brand">Virid<span>ite</span></span>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-controls="nav-menu" aria-label="Toggle navigation" aria-expanded="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <nav class="site" id="nav-menu" aria-label="Main">
+      <a href="/">Home</a>
+      <a href="store" class="active">Store</a>
+      <a href="compatibility">Compatibility</a>
+      <a href="roadmap">Roadmap</a>
+      <a href="credits">Credits</a>
+      <a href="docs">Docs</a>
+      <a href="https://github.com/Viridite">GitHub</a>
+      <a class="cta" href="download">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+
+    <div class="hero compact">
+      <h1 style="font-size:var(--fs-3xl)">Store</h1>
+      <p class="tagline">Turn a game you already have into a HOME menu entry.</p>
+    </div>
+
+    <section>
+      <div class="card">
+        <p style="margin-top:0">
+          Drop an APK below and this makes a <strong>forwarder</strong> — a small
+          <code>.nro</code> that appears in hbmenu with the game's own name and icon
+          and goes straight into it, without opening Viridite first.
+        </p>
+        <p style="margin-bottom:0;color:var(--text-mute);font-size:var(--fs-sm)">
+          <strong>Your APK never leaves this page.</strong> It is read in your browser
+          with the File API and the forwarder is assembled in memory. There is no
+          upload, no server step, and nothing is stored. You can disconnect from the
+          network after this page loads and it still works.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <label class="drop" id="drop">
+        <input type="file" id="file" accept=".apk,application/vnd.android.package-archive">
+        <strong id="drop-title">Choose an APK, or drop one here</strong>
+        <p style="margin:.5rem 0 0;color:var(--text-mute);font-size:var(--fs-sm)" id="drop-sub">
+          Nothing is uploaded.
+        </p>
+      </label>
+    </section>
+
+    <section id="result" class="hidden">
+      <div class="card">
+        <div class="fwd-grid">
+          <div>
+            <img class="fwd-icon" id="icon-prev" alt="Forwarder icon preview">
+            <p style="margin:.6rem 0 0">
+              <label class="btn" style="font-size:var(--fs-sm);cursor:pointer">
+                Replace icon
+                <input type="file" id="icon-file" accept="image/*" style="display:none">
+              </label>
+            </p>
+          </div>
+          <div class="fwd-fields">
+            <label><span>Name in the HOME menu</span><input id="f-title" maxlength="120"></label>
+            <label><span>Author</span><input id="f-author" maxlength="80"></label>
+            <label><span>Version</span><input id="f-version" maxlength="15"></label>
+            <label><span>Filename — must stay the package name, the launcher reads it back</span>
+              <input id="f-pkg" readonly></label>
+            <p>
+              <button class="btn primary" id="build">Download forwarder</button>
+              <button class="btn" id="preinstall">Pre-install the game</button>
+            </p>
+            <p id="log"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="card">
+        <h2 style="margin-top:0;font-size:var(--fs-lg)">Where it goes</h2>
+        <p>Copy the downloaded <code>.nro</code> to your SD card at:</p>
+        <p><code>/switch/Viridite Games/&lt;package&gt;.nro</code></p>
+        <p>
+          And put the APK itself in <code>/Viridite/apks/</code> — the forwarder
+          starts the Translation Core directly, and the Core needs the game to be
+          there.
+        </p>
+
+        <h2 style="font-size:var(--fs-lg)">Skipping the first-launch wait</h2>
+        <p>
+          The first time a game runs, the Core unpacks the APK onto your card and
+          that is the slow part. It only happens once — every launch after it is
+          cached — but it does not have to happen on the Switch at all.
+        </p>
+        <p>
+          <strong>Pre-install the game</strong> does that unpacking here instead,
+          on a machine with a real CPU and no SD card in the way, and gives you a
+          zip. Extract it into <code>/Viridite/games/</code> and the first launch
+          skips straight past extraction.
+        </p>
+        <p style="margin-bottom:0;color:var(--text-mute);font-size:var(--fs-sm)">
+          It is a separate download rather than something baked into the
+          <code>.nro</code> on purpose. Unpacked game data is <em>bigger</em> than
+          the APK it came from — that is what decompressing means — and hbloader
+          reads an NRO wholly into memory, so a forwarder with a game inside it
+          would be a larger download that would not load.
+        </p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<script type="module">
+import { readZip, readEntry, parseManifest, pickIcon, iconToJpeg,
+         buildNacp, buildForwarder, guessTitle, guessAuthor,
+         buildInstall, makeZip } from './assets/store.js?v=2';
+
+const $ = id => document.getElementById(id);
+const log = m => { $('log').textContent = m; };
+
+let state = { pkg: '', zip: null, iconBitmap: null, iconOverride: null };
+
+function show(el, on) { el.classList.toggle('hidden', !on); }
+
+async function paintIcon() {
+  const src = state.iconOverride || state.iconBitmap;
+  if (!src) { $('icon-prev').removeAttribute('src'); return; }
+  const c = document.createElement('canvas');
+  c.width = c.height = 256;
+  const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, 256, 256);
+  g.drawImage(src, 0, 0, 256, 256);
+  $('icon-prev').src = c.toDataURL('image/png');
+}
+
+async function handleApk(file) {
+  try {
+    $('drop-title').textContent = `Reading ${file.name}…`;
+    $('drop-sub').textContent = 'Nothing is uploaded.';
+    const zip = readZip(await file.arrayBuffer());
+
+    const mf = await readEntry(zip, 'AndroidManifest.xml');
+    if (!mf) throw new Error('No AndroidManifest.xml — is this an APK?');
+    const info = parseManifest(mf);
+    if (!info.packageName) throw new Error('Could not read the package name from the manifest.');
+
+    state.pkg = info.packageName;
+    state.zip = zip;
+    state.iconOverride = null;
+    $('f-pkg').value     = `${info.packageName}.nro`;
+    // The label is often a resource reference rather than a literal, and
+    // resolving it means parsing resources.arsc. Falling back to the package
+    // name and letting it be typed over is faster and always right.
+    $('f-title').value   = info.label || guessTitle(info.packageName);
+    $('f-author').value  = guessAuthor(info.packageName);
+    $('f-version').value = info.versionName || '1.0.0';
+
+    let note = '';
+    state.iconBitmap = await pickIcon(zip, n => { note = n; });
+    await paintIcon();
+
+    show($('result'), true);
+    $('drop-title').textContent = `${file.name} — ready`;
+    log(state.iconBitmap
+      ? `Found ${zip.entries.size} files. ${note}\nCheck the name and icon before downloading — both are guesses.`
+      : `Found ${zip.entries.size} files, but no icon that looks like a launcher icon. Add one with "Replace icon".`);
+  } catch (e) {
+    show($('result'), false);
+    $('drop-title').textContent = 'Choose an APK, or drop one here';
+    $('drop-sub').textContent = e.message;
+  }
+}
+
+$('file').addEventListener('change', e => { if (e.target.files[0]) handleApk(e.target.files[0]); });
+
+const drop = $('drop');
+['dragenter', 'dragover'].forEach(t => drop.addEventListener(t, e => {
+  e.preventDefault(); drop.classList.add('over');
+}));
+['dragleave', 'drop'].forEach(t => drop.addEventListener(t, e => {
+  e.preventDefault(); drop.classList.remove('over');
+}));
+drop.addEventListener('drop', e => {
+  const f = e.dataTransfer?.files?.[0];
+  if (f) handleApk(f);
+});
+
+$('icon-file').addEventListener('change', async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    state.iconOverride = await createImageBitmap(f);
+    await paintIcon();
+    log('Icon replaced.');
+  } catch { log('That image could not be read.'); }
+});
+
+$('preinstall').addEventListener('click', async () => {
+  if (!state.zip) { log('Load an APK first.'); return; }
+  try {
+    log('Unpacking… this is the work your Switch would otherwise do on first launch.');
+    const files = await buildInstall(state.zip, state.pkg, (n, total, name) => {
+      if (n % 25 === 0 || n === total) log(`Unpacking ${n}/${total} — ${name}`);
+    });
+    log(`Compressing ${files.length} files…`);
+    const blob = await makeZip(files, (n, total) => {
+      if (n % 25 === 0 || n === total) log(`Compressing ${n}/${total}…`);
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${state.pkg}-installed.zip`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 30000);
+    log(`Built ${state.pkg}-installed.zip — ${(blob.size / 1048576).toFixed(0)} MB. `
+      + 'Extract it into /Viridite/games/ on your SD card.');
+  } catch (e) {
+    log(e.message);
+  }
+});
+
+$('build').addEventListener('click', async () => {
+  try {
+    log('Fetching the forwarder stub…');
+    const res = await fetch('assets/forwarder.nro');
+    if (!res.ok) throw new Error(`Could not fetch the forwarder stub (HTTP ${res.status}).`);
+    const stub = new Uint8Array(await res.arrayBuffer());
+
+    const src = state.iconOverride || state.iconBitmap;
+    const icon = src ? await iconToJpeg(src) : null;
+    const nacp = buildNacp({
+      title:   $('f-title').value.trim()   || state.pkg,
+      author:  $('f-author').value.trim()  || 'Viridite Contributors',
+      version: $('f-version').value.trim() || '1.0.0',
+    });
+
+    const nro = buildForwarder(stub, icon, nacp);
+    const url = URL.createObjectURL(new Blob([nro], { type: 'application/octet-stream' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${state.pkg}.nro`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    log(`Built ${state.pkg}.nro — ${(nro.length / 1024).toFixed(0)} KB.`);
+  } catch (e) {
+    log(e.message);
+  }
+});
+</script>
+<script src="assets/discord-link.js"></script>
+</body>
+</html>
